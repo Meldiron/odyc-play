@@ -151,7 +151,7 @@
                     "type": "string",
                     "required": false,
                     "array": false,
-                    "size": 500,
+                    "size": 2048,
                     "default": null
                 },
                 {
@@ -159,7 +159,7 @@
                     "type": "string",
                     "required": false,
                     "array": false,
-                    "size": 500,
+                    "size": 2048,
                     "default": null
                 },
                 {
