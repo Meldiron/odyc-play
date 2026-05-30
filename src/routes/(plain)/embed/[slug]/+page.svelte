@@ -3,6 +3,7 @@
 	import type { PageProps } from './$types';
 	import { stores } from '$lib/stores.svelte';
 	import { DefaultCode } from '$lib/constants';
+	import { onMount } from 'svelte';
 
 	let { data }: PageProps = $props();
 
@@ -10,11 +11,13 @@
 
 	let preview: HTMLCanvasElement | null = $state(null);
 
-	window.addEventListener('message', function (event) {
-		const { type, detail } = event.data;
-		if (type === 'on-runner-ready') {
-			sendCode();
-		}
+	onMount(() => {
+		window.addEventListener('message', function (event) {
+			const { type, detail } = event.data;
+			if (type === 'on-runner-ready') {
+				sendCode();
+			}
+		});
 	});
 
 	function sendCode() {
