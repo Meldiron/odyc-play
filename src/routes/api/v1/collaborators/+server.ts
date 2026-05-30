@@ -7,7 +7,7 @@ export async function POST({ request }) {
 
 	const client = new Client()
 		.setEndpoint('https://fra.cloud.appwrite.io/v1')
-		.setProject('odyc-js')
+		.setProject('odyc-play')
 		.setKey(SSR_APPWRITE_API_KEY);
 
 	const databases = new Databases(client);
@@ -54,7 +54,7 @@ export async function POST({ request }) {
 
 	const clientJwt = new ClientJWT()
 		.setEndpoint('https://fra.cloud.appwrite.io/v1')
-		.setProject('odyc-js')
+		.setProject('odyc-play')
 		.setJWT(jwt);
 
 	const databasesJwt = new DatabasesJWT(clientJwt);

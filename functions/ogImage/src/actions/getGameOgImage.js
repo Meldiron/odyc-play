@@ -24,10 +24,10 @@ export async function getGameOgImage({ req, res, log }, { databases }) {
 
   const thumbnailUrl =
     thumbnailFileId === null
-      ? 'https://odyc-play.appwrite.network/game-placeholder.png'
+      ? 'https://odyc.appwrite.network/game-placeholder.png'
       : thumbnailFileId.startsWith('/')
-        ? 'https://odyc-play.appwrite.network' + thumbnailFileId
-        : `https://fra.cloud.appwrite.io/v1/storage/buckets/screenshots/files/${thumbnailFileId}/view?project=odyc-js`;
+        ? 'https://odyc.appwrite.network' + thumbnailFileId
+        : `https://fra.cloud.appwrite.io/v1/storage/buckets/screenshots/files/${thumbnailFileId}/view?project=odyc-play`;
 
   const descriptionChunks = description.split('\n');
 
@@ -131,7 +131,7 @@ export async function getGameOgImage({ req, res, log }, { databases }) {
                 height: '35px',
                 imageRendering: 'pixelated',
               }}
-              src="https://odyc-play.appwrite.network/logo-70.png"
+              src="https://odyc.appwrite.network/logo-70.png"
             />
             <span
               style={{

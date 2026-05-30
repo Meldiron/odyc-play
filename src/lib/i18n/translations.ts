@@ -20,8 +20,8 @@ export const translations = {
 
 		// Authentication
 		'auth.welcome': 'Welcome to Odyc.js Play',
-		'auth.welcomeDescription': 'Create and share your pixel-perfect games with the community',
-		'auth.email': 'Email',
+        'auth.welcomeDescription': 'Create and share your pixel-perfect games with your friends, colleagues, and community.',
+        'auth.email': 'Email',
 		'auth.signIn': 'Sign in',
 		'auth.continue': 'Continue',
 		'auth.or': 'Or',

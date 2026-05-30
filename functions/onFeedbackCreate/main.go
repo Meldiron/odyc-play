@@ -135,7 +135,7 @@ func Main(Context openruntimes.Context) openruntimes.Response {
 					},
 					{
 						Name:   "🔗 Quick Actions",
-						Value:  "[Feedback](https://cloud.appwrite.io/console/project-fra-odyc-js/databases/database-main/collection-feedbacks/document-" + body.Id + ") | [User](https://cloud.appwrite.io/console/project-fra-odyc-js/auth/user-" + user.Id + ")",
+						Value:  "[Feedback](https://cloud.appwrite.io/console/project-fra-odyc-play/databases/database-main/collection-feedbacks/document-" + body.Id + ") | [User](https://cloud.appwrite.io/console/project-fra-odyc-play/auth/user-" + user.Id + ")",
 						Inline: true,
 					},
 				},
@@ -146,7 +146,7 @@ func Main(Context openruntimes.Context) openruntimes.Response {
 	
 	if body.FileId != "" {
 		message.Embeds[0].Image = DiscordImage{
-			URL: "https://fra.cloud.appwrite.io/v1/storage/buckets/feedbacks/files/" + body.FileId + "/view?project=odyc-js&mode=admin",
+			URL: "https://fra.cloud.appwrite.io/v1/storage/buckets/feedbacks/files/" + body.FileId + "/view?project=odyc-play&mode=admin",
 		}
 	}
 

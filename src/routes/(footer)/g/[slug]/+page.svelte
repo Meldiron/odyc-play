@@ -83,7 +83,7 @@
 	/>
 
 	<!-- Facebook Meta Tags -->
-	<meta property="og:url" content={`https://odyc-play.appwrite.network/g/${game.slug}`} />
+	<meta property="og:url" content={`https://odyc.appwrite.network/g/${game.slug}`} />
 	<meta property="og:type" content="website" />
 	<meta property="og:title" content={`${game.name} | Odyc.js Play`} />
 	<meta
@@ -97,8 +97,8 @@
 
 	<!-- Twitter Meta Tags -->
 	<meta name="twitter:card" content="summary_large_image" />
-	<meta property="twitter:domain" content="odyc-play.appwrite.network" />
-	<meta property="twitter:url" content={`https://odyc-play.appwrite.network/g/${game.slug}`} />
+	<meta property="twitter:domain" content="odyc.appwrite.network" />
+	<meta property="twitter:url" content={`https://odyc.appwrite.network/g/${game.slug}`} />
 	<meta name="twitter:title" content={`${game.name} | Odyc.js Play`} />
 	<meta
 		name="twitter:description"

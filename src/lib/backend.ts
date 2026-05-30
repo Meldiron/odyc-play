@@ -29,7 +29,7 @@ export class Backend {
 	// Connection
 	static #client = new Client()
 		.setEndpoint('https://fra.cloud.appwrite.io/v1')
-		.setProject('odyc-js');
+		.setProject('odyc-play');
 
 	// Service SDKs
 	static #account: Account = new Account(this.#client);
