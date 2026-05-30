@@ -575,7 +575,7 @@ ${code}
 	</Breadcrumb.Root>
 
 	<div class="mb-3 grid grid-cols-6 gap-6 sm:grid-cols-12">
-		<div class="col-span-6 w-[fit-content]">
+		<div class="col-span-6 flex w-[fit-content] items-center gap-2">
 			<Menubar.Root>
 				<Menubar.Menu>
 					<Menubar.Trigger class="relative">
@@ -745,6 +745,17 @@ ${code}
 					</Menubar.Content>
 				</Menubar.Menu>
 			</Menubar.Root>
+
+			<Button
+				href="https://odyc.dev/doc/getting-started/intro"
+				target="_blank"
+				rel="noopener noreferrer"
+				variant="outline"
+				size="sm"
+			>
+				{stores.t('editor.docs')}
+				<ExternalLinkIcon />
+			</Button>
 		</div>
 		<div class="col-span-6 flex w-full gap-4 sm:justify-end">
 			<div class="flex items-center space-x-2">
