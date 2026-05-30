@@ -51,7 +51,7 @@ async function init() {
 		target: ts.ScriptTarget.ES2016,
 		lib: ['es2017', 'dom'],
 		allowJs: true,
-		checkJs: true
+		checkJs: false
 	};
 
 	filesMap = await createDefaultMapFromCDN(compilerOptions, ts.version, false, ts, lzstring);
