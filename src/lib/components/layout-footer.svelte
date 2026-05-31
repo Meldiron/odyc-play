@@ -17,7 +17,7 @@
 		<a class="hover:underline" href="https://odyc.dev/" target="_blank"
 			>{stores.t('nav.documentation')}</a
 		>
-		<a class="hover:underline" href="https://github.com/achtaitaipai/odyc" target="_blank"
+		<a class="hover:underline" href="https://github.com/meldiron/odyc-play" target="_blank"
 			>{stores.t('nav.github')}</a
 		>
 		<a class="hover:underline" href="https://discord.gg/fH53NGAmr4" target="_blank"
@@ -30,7 +30,7 @@
 		class="i mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 px-6 text-lg sm:flex-row"
 	>
 		<p class="text-muted-foreground text-sm font-light">
-			© {currentYear} Odyc.js. {stores.t('footer.allRightsReserved')}
+			© {currentYear} Meldiron. {stores.t('footer.allRightsReserved')}
 		</p>
 
 		<p class="font text-muted-foreground text-sm font-light">
