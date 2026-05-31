@@ -12,10 +12,11 @@
 	import IconCheck from '@lucide/svelte/icons/check';
 	import IconLoader from '@lucide/svelte/icons/loader-2';
 	import MoonIcon from '@lucide/svelte/icons/moon';
+	import MonitorIcon from '@lucide/svelte/icons/monitor';
 	import SunIcon from '@lucide/svelte/icons/sun';
 	import UserIcon from '@lucide/svelte/icons/user';
 	import html2canvas from 'html2canvas-pro';
-	import { toggleMode } from 'mode-watcher';
+	import { setMode, userPrefersMode } from 'mode-watcher';
 	import { toast } from 'svelte-sonner';
 	import Sprite from './plaint/Sprite.svelte';
 	import CommandPalette from './command-palette.svelte';
@@ -190,15 +191,42 @@
 				</kbd>
 			</button>
 
-			<Button onclick={toggleMode} variant="ghost" class="" size="icon">
-				<SunIcon
-					class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 !transition-all dark:scale-0 dark:-rotate-90"
-				/>
-				<MoonIcon
-					class="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 !transition-all dark:scale-100 dark:rotate-0"
-				/>
-				<span class="sr-only">{stores.t('ui.toggleTheme')}</span>
-			</Button>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger>
+					<Button variant="ghost" class="" size="icon">
+						<SunIcon
+							class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 !transition-all dark:scale-0 dark:-rotate-90"
+						/>
+						<MoonIcon
+							class="absolute h-[1.2rem] w-[1.2rem] scale-0 rotate-90 !transition-all dark:scale-100 dark:rotate-0"
+						/>
+						<span class="sr-only">{stores.t('ui.toggleTheme')}</span>
+					</Button>
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content align="end">
+					<DropdownMenu.Item onclick={() => setMode('light')}>
+						<SunIcon class="mr-2 size-4" />
+						<span>{stores.t('ui.themeLight')}</span>
+						{#if userPrefersMode.current === 'light'}
+							<IconCheck class="ml-auto size-4" />
+						{/if}
+					</DropdownMenu.Item>
+					<DropdownMenu.Item onclick={() => setMode('dark')}>
+						<MoonIcon class="mr-2 size-4" />
+						<span>{stores.t('ui.themeDark')}</span>
+						{#if userPrefersMode.current === 'dark'}
+							<IconCheck class="ml-auto size-4" />
+						{/if}
+					</DropdownMenu.Item>
+					<DropdownMenu.Item onclick={() => setMode('system')}>
+						<MonitorIcon class="mr-2 size-4" />
+						<span>{stores.t('ui.themeSystem')}</span>
+						{#if userPrefersMode.current === 'system'}
+							<IconCheck class="ml-auto size-4" />
+						{/if}
+					</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger>

@@ -187,6 +187,9 @@ export const translations = {
 		'ui.loading': 'Loading...',
 		'ui.backToHomepage': 'Back to homepage',
 		'ui.toggleTheme': 'Toggle theme',
+		'ui.themeLight': 'Light',
+		'ui.themeDark': 'Dark',
+		'ui.themeSystem': 'System',
 
 		// Feedback
 		'feedback.title': "Let's make Odyc.js better",
@@ -413,6 +416,9 @@ export const translations = {
 		'ui.loading': 'Chargement...',
 		'ui.backToHomepage': "Retour à l'accueil",
 		'ui.toggleTheme': 'Basculer le thème',
+		'ui.themeLight': 'Clair',
+		'ui.themeDark': 'Sombre',
+		'ui.themeSystem': 'Système',
 
 		// Feedback
 		'feedback.title': 'Améliorons Odyc.js ensemble',

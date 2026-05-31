@@ -6,7 +6,7 @@
 	import { Backend } from '$lib/backend';
 	import { Toaster } from '$lib/components/ui/sonner/index.js';
 	import { stores } from '$lib/stores.svelte';
-	import { ModeWatcher, mode } from 'mode-watcher';
+	import { ModeWatcher, userPrefersMode } from 'mode-watcher';
 
 	let { children, data } = $props();
 
@@ -17,9 +17,10 @@
 	}
 
 	$effect(() => {
-		if (mode.current && (stores.user?.prefs.theme ?? '') !== mode.current) {
+		const preference = userPrefersMode.current;
+		if (preference && (stores.user?.prefs.theme ?? '') !== preference) {
 			if (stores.user) {
-				storeTheme(mode.current);
+				storeTheme(preference);
 			}
 		}
 	});
@@ -33,7 +34,7 @@
 </script>
 
 <ModeWatcher
-	defaultMode={(theme as 'dark') || 'light'}
+	defaultMode={(theme as 'light' | 'dark' | 'system') || 'dark'}
 	lightClassNames={[]}
 	darkClassNames={['dark']}
 />
