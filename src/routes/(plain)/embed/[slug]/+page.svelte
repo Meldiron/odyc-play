@@ -11,6 +11,7 @@
 
 	let preview: HTMLCanvasElement | null = $state(null);
 
+	let clientReady = $state(false);
 	onMount(() => {
 		window.addEventListener('message', function (event) {
 			const { type, detail } = event.data;
@@ -18,6 +19,7 @@
 				sendCode();
 			}
 		});
+		clientReady = true;
 	});
 
 	function sendCode() {
@@ -40,10 +42,12 @@
 </script>
 
 <div class="fixed inset-0">
-	<iframe
-		class="h-full w-full"
-		id="preview"
-		src={(PUBLIC_IFRAME_ENDPOINT ?? '/iframe') + '?version=' + game.version}
-		title={stores.t('editor.gamePreview')}
-	></iframe>
+	{#if clientReady}
+		<iframe
+			class="h-full w-full"
+			id="preview"
+			src={(PUBLIC_IFRAME_ENDPOINT ?? '/iframe') + '?version=' + game.version}
+			title={stores.t('editor.gamePreview')}
+		></iframe>
+	{/if}
 </div>
