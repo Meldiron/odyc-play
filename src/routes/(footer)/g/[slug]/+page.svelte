@@ -95,7 +95,7 @@
 	/>
 	<meta
 		property="og:image"
-		content={`https://688487d9000eea37e1fe.fra.appwrite.run/v1/og-images/games/${game.$id}`}
+		content={`https://odyc-og.fra.appwrite.run/v1/og-images/games/${game.$id}`}
 	/>
 
 	<!-- Twitter Meta Tags -->
@@ -109,7 +109,7 @@
 	/>
 	<meta
 		name="twitter:image"
-		content={`https://688487d9000eea37e1fe.fra.appwrite.run/v1/og-images/games/${game.$id}`}
+		content={`https://odyc-og.fra.appwrite.run/v1/og-images/games/${game.$id}`}
 	/>
 
 	<!-- Meta Tags Generated via https://www.opengraph.xyz -->
