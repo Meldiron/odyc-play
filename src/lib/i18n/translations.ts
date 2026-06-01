@@ -295,7 +295,25 @@ export const translations = {
 		'secrets.newSecretTitle': 'New client secret',
 		'secrets.newSecretDescription':
 			'Copy this secret now. For security reasons, you will not be able to see it again.',
-		'secrets.done': 'Done'
+		'secrets.done': 'Done',
+
+		// OAuth2 consent screen
+		'consent.heading': 'Authorize access',
+		'consent.wantsAccess': 'wants to access your Odyc.js Play account.',
+		'consent.anApp': 'An application',
+		'consent.permissions': 'This will allow it to:',
+		'consent.allow': 'Allow',
+		'consent.deny': 'Deny',
+		'consent.signInHeading': 'Sign in to continue',
+		'consent.signInDescription':
+			'An application is requesting access to your account. Please sign in to continue.',
+		'consent.redirecting': 'Redirecting…',
+		'consent.invalidRequest': 'This authorization request is invalid or has expired.',
+		'consent.scope.openid': 'Verify your identity',
+		'consent.scope.profile': 'Access your profile (name and avatar)',
+		'consent.scope.email': 'Access your email address',
+		'consent.scope.profileRead': 'Read your profile',
+		'consent.scope.profileWrite': 'Modify your profile'
 	},
 	fr: {
 		// Overview
@@ -598,6 +616,24 @@ export const translations = {
 		'secrets.newSecretTitle': 'Nouveau secret client',
 		'secrets.newSecretDescription':
 			'Copiez ce secret maintenant. Pour des raisons de sécurité, vous ne pourrez plus le revoir.',
-		'secrets.done': 'Terminé'
+		'secrets.done': 'Terminé',
+
+		// OAuth2 consent screen
+		'consent.heading': "Autoriser l'accès",
+		'consent.wantsAccess': 'souhaite accéder à votre compte Odyc.js Play.',
+		'consent.anApp': 'Une application',
+		'consent.permissions': 'Cela lui permettra de :',
+		'consent.allow': 'Autoriser',
+		'consent.deny': 'Refuser',
+		'consent.signInHeading': 'Connectez-vous pour continuer',
+		'consent.signInDescription':
+			'Une application demande à accéder à votre compte. Veuillez vous connecter pour continuer.',
+		'consent.redirecting': 'Redirection…',
+		'consent.invalidRequest': "Cette demande d'autorisation est invalide ou a expiré.",
+		'consent.scope.openid': 'Vérifier votre identité',
+		'consent.scope.profile': 'Accéder à votre profil (nom et avatar)',
+		'consent.scope.email': 'Accéder à votre adresse e-mail',
+		'consent.scope.profileRead': 'Lire votre profil',
+		'consent.scope.profileWrite': 'Modifier votre profil'
 	}
 } as const;
