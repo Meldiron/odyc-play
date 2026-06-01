@@ -1,6 +1,7 @@
 import type { PageLoad } from './$types';
 import { Backend } from '$lib/backend';
 import { APPWRITE_PROJECT, OAUTH2_BASE } from '$lib/constants';
+import { redirect } from '@sveltejs/kit';
 
 // Session-dependent; never prerender or SSR this page.
 export const ssr = false;
@@ -11,6 +12,14 @@ export const load: PageLoad = async ({ url, fetch }) => {
 	const scope = url.searchParams.get('scope') ?? '';
 
 	const user = await Backend.getUserSafe();
+
+	// Authentication happens on the dedicated sign-in page. If the user has no
+	// session yet (and isn't mid-consent), send them there and ask it to return
+	// to this exact consent URL once they're signed in.
+	if (!grantId && !user) {
+		const returnTo = `/consent${url.search}`;
+		throw redirect(307, `/auth/sign-in?redirect=${encodeURIComponent(returnTo)}`);
+	}
 
 	// Re-enter the OAuth2 flow with the exact same params after login (Situation A).
 	const authorizeUrl = `${OAUTH2_BASE}/authorize${url.search}`;
@@ -42,7 +51,6 @@ export const load: PageLoad = async ({ url, fetch }) => {
 		rejectUrl: `${OAUTH2_BASE}/reject`,
 		projectId: APPWRITE_PROJECT,
 		appName,
-		isLoggedIn: !!user,
-		returnPath: `/consent${url.search}`
+		isLoggedIn: !!user
 	};
 };

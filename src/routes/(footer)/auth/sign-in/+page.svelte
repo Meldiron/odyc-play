@@ -15,6 +15,12 @@
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import { toast } from 'svelte-sonner';
 	import { stores } from '$lib/stores.svelte';
+	import { page } from '$app/state';
+
+	// Where to send the user after sign in (e.g. back to the OAuth2 consent
+	// screen). Resolved by the auth layout for the in-page flows; passed to the
+	// OAuth callback for the GitHub redirect flow.
+	const redirectTarget = $derived(page.data.redirect ?? '/');
 
 	let isLoading = $state(false);
 
@@ -78,7 +84,8 @@
 
 	async function onGitHubSignIn() {
 		isLoading = true;
-		Backend.signInGitHub(); // Redirects away
+		// Pass the post-login target so the OAuth callback returns the user there.
+		Backend.signInGitHub(redirectTarget === '/' ? undefined : redirectTarget); // Redirects away
 	}
 </script>
 
