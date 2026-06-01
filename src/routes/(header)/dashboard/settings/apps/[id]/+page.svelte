@@ -13,7 +13,7 @@
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import * as Table from '$lib/components/ui/table/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
-	import { Dependencies } from '$lib/constants';
+	import { Dependencies, OAUTH2_BASE } from '$lib/constants';
 	import { stores } from '$lib/stores.svelte';
 	import CopyIcon from '@lucide/svelte/icons/copy';
 	import PlusIcon from '@lucide/svelte/icons/plus';
@@ -43,7 +43,7 @@
 	}
 
 	// OpenID Connect endpoints (same base as the configured Appwrite project)
-	const oidcBase = 'https://fra.cloud.appwrite.io/v1/oauth2/odyc-play';
+	const oidcBase = OAUTH2_BASE;
 	const oidcUrls = [
 		{ label: 'apps.oidcDiscovery', url: `${oidcBase}/.well-known/openid-configuration` },
 		{ label: 'apps.oidcAuthorization', url: `${oidcBase}/authorize` },

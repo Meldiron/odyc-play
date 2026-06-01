@@ -14,6 +14,7 @@ import randomName from '@scaleway/random-name';
 import { type Games, type CommunityHighlights, type Profiles, type Feedback } from './appwrite';
 import slugify from 'slugify';
 import { stores } from './stores.svelte';
+import { APPWRITE_ENDPOINT, APPWRITE_PROJECT } from './constants';
 import { PUBLIC_ODYC_VERSION } from '$env/static/public';
 import { generateAvatar } from './avatar';
 import type { Locale } from './i18n';
@@ -28,9 +29,7 @@ export type BackendUser = Models.User<BackendPrefs>;
 
 export class Backend {
 	// Connection
-	static #client = new Client()
-		.setEndpoint('https://fra.cloud.appwrite.io/v1')
-		.setProject('odyc-play');
+	static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
 
 	// Service SDKs
 	static #account: Account = new Account(this.#client);
@@ -50,15 +49,20 @@ export class Backend {
 		return await this.#account.createEmailToken(ID.unique(), email, true);
 	}
 
-	static signInGitHub() {
-		const path =
+	static signInGitHub(returnPath?: string) {
+		const fallback =
 			window.location.origin +
 			'/oauth/callback?redirect=' +
 			encodeURIComponent(window.location.pathname);
+		// When a return path is provided (e.g. OAuth2 consent flow), the callback
+		// honors the `href` param and sends the user back there after sign in.
+		const success = returnPath
+			? window.location.origin + '/oauth/callback?href=' + encodeURIComponent(returnPath)
+			: fallback;
 		this.#account.createOAuth2Token(
 			OAuthProvider.Github,
-			path, // On success
-			path // On failure
+			success, // On success
+			fallback // On failure
 		);
 	}
 

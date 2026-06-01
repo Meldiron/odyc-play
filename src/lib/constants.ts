@@ -8,6 +8,11 @@ export enum Dependencies {
 	APP = 'dependency:app'
 }
 
+// Appwrite connection (single source of truth)
+export const APPWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
+export const APPWRITE_PROJECT = 'odyc-play';
+export const OAUTH2_BASE = `${APPWRITE_ENDPOINT}/oauth2/${APPWRITE_PROJECT}`;
+
 export const DefaultProfilePicture = `
   99999999
   55555555
