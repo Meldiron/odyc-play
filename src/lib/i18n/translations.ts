@@ -310,10 +310,10 @@ export const translations = {
 		'consent.redirecting': 'Redirecting…',
 		'consent.invalidRequest': 'This authorization request is invalid or has expired.',
 		'consent.scope.openid': 'Verify your identity',
-		'consent.scope.profile': 'Access your profile (name and avatar)',
+		'consent.scope.profile': 'Access your account name',
 		'consent.scope.email': 'Access your email address',
-		'consent.scope.profileRead': 'Read your profile',
-		'consent.scope.profileWrite': 'Modify your profile'
+		'consent.scope.profileRead': 'Read your account information',
+		'consent.scope.profileWrite': 'Update your account information'
 	},
 	fr: {
 		// Overview
@@ -631,9 +631,9 @@ export const translations = {
 		'consent.redirecting': 'Redirection…',
 		'consent.invalidRequest': "Cette demande d'autorisation est invalide ou a expiré.",
 		'consent.scope.openid': 'Vérifier votre identité',
-		'consent.scope.profile': 'Accéder à votre profil (nom et avatar)',
+		'consent.scope.profile': 'Accéder au nom de votre compte',
 		'consent.scope.email': 'Accéder à votre adresse e-mail',
-		'consent.scope.profileRead': 'Lire votre profil',
-		'consent.scope.profileWrite': 'Modifier votre profil'
+		'consent.scope.profileRead': 'Lire les informations de votre compte',
+		'consent.scope.profileWrite': 'Mettre à jour les informations de votre compte'
 	}
 } as const;
