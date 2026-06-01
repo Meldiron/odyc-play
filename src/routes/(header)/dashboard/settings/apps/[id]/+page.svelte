@@ -42,6 +42,16 @@
 			.filter((uri) => uri.length > 0);
 	}
 
+	// OpenID Connect endpoints (same base as the configured Appwrite project)
+	const oidcBase = 'https://fra.cloud.appwrite.io/v1/oauth2/odyc-play';
+	const oidcUrls = [
+		{ label: 'apps.oidcDiscovery', url: `${oidcBase}/.well-known/openid-configuration` },
+		{ label: 'apps.oidcAuthorization', url: `${oidcBase}/authorize` },
+		{ label: 'apps.oidcToken', url: `${oidcBase}/token` },
+		{ label: 'apps.oidcUserinfo', url: `${oidcBase}/userinfo` },
+		{ label: 'apps.oidcJwks', url: `${oidcBase}/.well-known/jwks.json` }
+	] as const;
+
 	const hasChanges = $derived(
 		name !== app.name ||
 			type !== app.type ||
@@ -302,6 +312,34 @@
 			</Card.Content>
 		</Card.Root>
 
+		<Card.Root class="w-full">
+			<Card.Header>
+				<Card.Title>{stores.t('apps.advanced')}</Card.Title>
+				<Card.Description>{stores.t('apps.advancedDescription')}</Card.Description>
+			</Card.Header>
+			<Card.Content>
+				<div class="flex flex-col gap-4">
+					{#each oidcUrls as oidc (oidc.url)}
+						<div class="grid gap-2">
+							<Label>{stores.t(oidc.label)}</Label>
+							<div class="flex items-center gap-2">
+								<Input value={oidc.url} readonly class="font-mono text-sm" />
+								<Button
+									type="button"
+									variant="outline"
+									size="icon"
+									aria-label={stores.t('secrets.copy')}
+									onclick={() => copy(oidc.url)}
+								>
+									<CopyIcon class="size-4" />
+								</Button>
+							</div>
+						</div>
+					{/each}
+				</div>
+			</Card.Content>
+		</Card.Root>
+
 		<Card.Root class="border-destructive/50 w-full">
 			<Card.Header>
 				<Card.Title class="text-destructive">{stores.t('apps.dangerZone')}</Card.Title>
@@ -312,11 +350,7 @@
 						<Label>{stores.t('apps.revokeTokens')}</Label>
 						<p class="text-muted-foreground text-sm">{stores.t('apps.revokeTokensDescription')}</p>
 					</div>
-					<Button
-						variant="outline"
-						class="flex-shrink-0"
-						onclick={() => (showRevokeDialog = true)}
-					>
+					<Button variant="outline" class="flex-shrink-0" onclick={() => (showRevokeDialog = true)}>
 						{stores.t('apps.revokeTokens')}
 					</Button>
 				</div>

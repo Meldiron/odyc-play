@@ -264,6 +264,14 @@ export const translations = {
 		'apps.tokensRevoked': 'All tokens revoked successfully.',
 		'apps.notFound': 'App not found.',
 		'apps.backToApps': 'OAuth2 Apps',
+		'apps.advanced': 'Advanced',
+		'apps.advancedDescription':
+			'OpenID Connect endpoints for integrating this app with an OIDC client.',
+		'apps.oidcDiscovery': 'Discovery document',
+		'apps.oidcAuthorization': 'Authorization URL',
+		'apps.oidcToken': 'Token URL',
+		'apps.oidcUserinfo': 'UserInfo URL',
+		'apps.oidcJwks': 'JWKS URL',
 
 		// App secrets
 		'secrets.title': 'Client secrets',
@@ -559,6 +567,14 @@ export const translations = {
 		'apps.tokensRevoked': 'Tous les jetons ont été révoqués avec succès.',
 		'apps.notFound': 'Application introuvable.',
 		'apps.backToApps': 'Applications OAuth2',
+		'apps.advanced': 'Avancé',
+		'apps.advancedDescription':
+			'Points de terminaison OpenID Connect pour intégrer cette application avec un client OIDC.',
+		'apps.oidcDiscovery': 'Document de découverte',
+		'apps.oidcAuthorization': "URL d'autorisation",
+		'apps.oidcToken': 'URL du jeton',
+		'apps.oidcUserinfo': 'URL UserInfo',
+		'apps.oidcJwks': 'URL JWKS',
 
 		// App secrets
 		'secrets.title': 'Secrets client',
