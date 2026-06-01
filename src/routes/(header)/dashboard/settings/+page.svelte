@@ -23,6 +23,7 @@
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { goto } from '$app/navigation';
 	import PlusIcon from '@lucide/svelte/icons/plus';
+	import KeyIcon from '@lucide/svelte/icons/key-round';
 	import SettingsIcon from '@lucide/svelte/icons/settings';
 	import TrashIcon from '@lucide/svelte/icons/trash-2';
 	import type { PageProps } from './$types';
@@ -35,7 +36,6 @@
 	let appName = $state('');
 	let appType: 'confidential' | 'public' = $state('confidential');
 	let appRedirectUris = $state('');
-	let appEnabled = $state(true);
 	let appInternal = $state(false);
 	let isCreatingApp = $state(false);
 
@@ -50,7 +50,6 @@
 		appName = '';
 		appType = 'confidential';
 		appRedirectUris = '';
-		appEnabled = true;
 		appInternal = false;
 	}
 
@@ -63,7 +62,7 @@
 				appName,
 				parseRedirectUris(appRedirectUris),
 				appType,
-				appEnabled,
+				true,
 				appInternal
 			);
 			toast.success(stores.t('apps.created'));
@@ -275,7 +274,20 @@
 			</Card.Header>
 			<Card.Content>
 				{#if apps.length === 0}
-					<p class="text-muted-foreground py-6 text-center text-sm">{stores.t('apps.empty')}</p>
+					<div
+						class="border-muted-foreground/25 flex flex-col items-center justify-center gap-4 rounded-lg border border-dashed px-6 py-12 text-center"
+					>
+						<div
+							class="bg-muted text-muted-foreground flex size-12 items-center justify-center rounded-full"
+						>
+							<KeyIcon class="size-6" />
+						</div>
+						<p class="text-muted-foreground max-w-sm text-sm">{stores.t('apps.empty')}</p>
+						<Button variant="outline" onclick={() => (showCreateApp = true)}>
+							<PlusIcon class="size-4" />
+							{stores.t('apps.create')}
+						</Button>
+					</div>
 				{:else}
 					<ul class="flex flex-col gap-2">
 						{#each apps as app (app.$id)}
@@ -361,13 +373,6 @@
 						rows={3}
 					/>
 					<p class="text-muted-foreground text-xs">{stores.t('apps.redirectUrisHint')}</p>
-				</div>
-				<div class="flex items-start gap-3">
-					<Switch id="app-enabled" bind:checked={appEnabled} />
-					<div class="grid gap-1">
-						<Label for="app-enabled">{stores.t('apps.enabled')}</Label>
-						<p class="text-muted-foreground text-sm">{stores.t('apps.enabledHint')}</p>
-					</div>
 				</div>
 				<div class="flex items-start gap-3">
 					<Switch id="app-internal" bind:checked={appInternal} />
