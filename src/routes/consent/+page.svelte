@@ -15,20 +15,10 @@
 	// (Unauthenticated users were redirected to /auth/sign-in by the load fn.)
 	const redirecting = $derived(!data.grantId && data.isLoggedIn);
 
-	onMount(async () => {
+	onMount(() => {
 		if (redirecting) {
-			// The Appwrite session is kept in localStorage as a cookie fallback (used
-			// when the API can't set a real cookie cross-domain). The SDK forwards it
-			// via the X-Fallback-Cookies header on its own fetches, so we do the same:
-			// request the authorize endpoint with that header, follow the redirect
-			// chain, then navigate the browser to wherever it lands (consent?grant_id
-			// or the app's redirect_uri).
-			const fallbackCookie = localStorage.getItem('cookieFallback');
-			const res = await fetch(data.authorizeUrl, {
-				credentials: 'include',
-				headers: fallbackCookie ? { 'X-Fallback-Cookies': fallbackCookie } : {}
-			});
-			window.location.href = res.url;
+			const url = new URL(data.authorizeUrl);
+			window.location.href = url.toString();
 		}
 	});
 
