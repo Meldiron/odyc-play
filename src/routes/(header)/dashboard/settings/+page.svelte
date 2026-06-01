@@ -17,7 +17,6 @@
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { defaultLocale, languages, locales, type Locale } from '$lib/i18n';
-	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
@@ -25,7 +24,6 @@
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import KeyIcon from '@lucide/svelte/icons/key-round';
 	import SettingsIcon from '@lucide/svelte/icons/settings';
-	import TrashIcon from '@lucide/svelte/icons/trash-2';
 	import type { PageProps } from './$types';
 
 	let { data }: PageProps = $props();
@@ -73,25 +71,6 @@
 			toast.error(err.message);
 		} finally {
 			isCreatingApp = false;
-		}
-	}
-
-	let appToDelete = $state<string | null>(null);
-	let isDeletingApp = $state(false);
-
-	async function onDeleteApp() {
-		if (!appToDelete) return;
-		isDeletingApp = true;
-
-		try {
-			await Backend.deleteApp(appToDelete);
-			toast.success(stores.t('apps.deleted'));
-			appToDelete = null;
-			await invalidate(Dependencies.APPS);
-		} catch (err: any) {
-			toast.error(err.message);
-		} finally {
-			isDeletingApp = false;
 		}
 	}
 
@@ -313,14 +292,6 @@
 										<SettingsIcon class="size-4" />
 										{stores.t('apps.manage')}
 									</Button>
-									<Button
-										variant="ghost"
-										size="icon"
-										aria-label={stores.t('apps.delete')}
-										onclick={() => (appToDelete = app.$id)}
-									>
-										<TrashIcon class="size-4" />
-									</Button>
 								</div>
 							</li>
 						{/each}
@@ -391,26 +362,6 @@
 		</form>
 	</Dialog.Content>
 </Dialog.Root>
-
-<AlertDialog.Root
-	open={appToDelete !== null}
-	onOpenChange={(open) => {
-		if (!open) appToDelete = null;
-	}}
->
-	<AlertDialog.Content>
-		<AlertDialog.Header>
-			<AlertDialog.Title>{stores.t('apps.deleteTitle')}</AlertDialog.Title>
-			<AlertDialog.Description>{stores.t('apps.deleteDescription')}</AlertDialog.Description>
-		</AlertDialog.Header>
-		<AlertDialog.Footer>
-			<AlertDialog.Cancel>{stores.t('ui.cancel')}</AlertDialog.Cancel>
-			<AlertDialog.Action onclick={onDeleteApp} disabled={isDeletingApp}>
-				{stores.t('apps.delete')}
-			</AlertDialog.Action>
-		</AlertDialog.Footer>
-	</AlertDialog.Content>
-</AlertDialog.Root>
 
 <Dialog.Root open={showEditor} onOpenChange={setShowEditor}>
 	<Dialog.Content class="sm:max-w-[425px]">
