@@ -15,14 +15,14 @@
         "@scaleway/random-name": "^5.1.2",
         "@sveltejs/adapter-static": "^3.0.8",
         "@typescript/vfs": "^1.6.1",
+        "appwrite": "https://pkg.vc/-/@appwrite/appwrite@7bb52a0",
         "codemirror": "^6.0.2",
         "codemirror-theme-vars": "^0.1.2",
         "friendly-words": "^1.3.1",
-        "appwrite": "https://pkg.vc/-/@appwrite/appwrite@7bb52a0",
+        "node-appwrite": "https://pkg.vc/-/@appwrite/node-appwrite@7bb52a0",
         "js-beautify": "^1.15.4",
         "lz-string": "^1.5.0",
         "mode-watcher": "^1.1.0",
-        "node-appwrite": "^17.2.0",
         "pfxr": "^1.0.9",
         "slugify": "^1.6.6",
       },
@@ -942,7 +942,7 @@
 
     "negotiator": ["negotiator@0.6.3", "", {}, "sha512-+EUsqGPLsM+j/zdChZjsnX51g4XrHFOIXwfnCVPGlQk/k5giakcKsuxCObBRu6DSm9opw/O6slWbJdghQM4bBg=="],
 
-    "node-appwrite": ["node-appwrite@17.2.0", "", { "dependencies": { "node-fetch-native-with-agent": "1.7.2" } }, "sha512-naYUsVZEdF6YKF/q/s0DBQkAHJj2RhEWwmcXrkbfAAPc3Bn+D3CCftBqyNWeo17JBCoYWqQEgT2Od9xOVQR26A=="],
+    "node-appwrite": ["node-appwrite@https://pkg.vc/-/@appwrite/node-appwrite@7bb52a0", { "dependencies": { "json-bigint": "1.0.0", "node-fetch-native-with-agent": "1.7.2" } }],
 
     "node-fetch-native-with-agent": ["node-fetch-native-with-agent@1.7.2", "", {}, "sha512-5MaOOCuJEvcckoz7/tjdx1M6OusOY6Xc5f459IaruGStWnKzlI1qpNgaAwmn4LmFYcsSlj+jBMk84wmmRxfk5g=="],
 
