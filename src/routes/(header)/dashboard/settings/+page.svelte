@@ -5,7 +5,7 @@
 
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import { Input } from '$lib/components/ui/input/index.js';
-	import { Button, buttonVariants } from '$lib/components/ui/button/index.js';
+	import { Button } from '$lib/components/ui/button/index.js';
 
 	import { stores } from '$lib/stores.svelte';
 	import * as Dialog from '$lib/components/ui/dialog/index.js';
@@ -17,6 +17,84 @@
 	import Checkbox from '$lib/components/ui/checkbox/checkbox.svelte';
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { defaultLocale, languages, locales, type Locale } from '$lib/i18n';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
+	import { Switch } from '$lib/components/ui/switch/index.js';
+	import { Textarea } from '$lib/components/ui/textarea/index.js';
+	import { goto } from '$app/navigation';
+	import PlusIcon from '@lucide/svelte/icons/plus';
+	import SettingsIcon from '@lucide/svelte/icons/settings';
+	import TrashIcon from '@lucide/svelte/icons/trash-2';
+	import type { PageProps } from './$types';
+
+	let { data }: PageProps = $props();
+
+	const apps = $derived(data.apps.apps);
+
+	let showCreateApp = $state(false);
+	let appName = $state('');
+	let appType: 'confidential' | 'public' = $state('confidential');
+	let appRedirectUris = $state('');
+	let appEnabled = $state(true);
+	let appInternal = $state(false);
+	let isCreatingApp = $state(false);
+
+	function parseRedirectUris(value: string) {
+		return value
+			.split('\n')
+			.map((uri) => uri.trim())
+			.filter((uri) => uri.length > 0);
+	}
+
+	function resetCreateAppForm() {
+		appName = '';
+		appType = 'confidential';
+		appRedirectUris = '';
+		appEnabled = true;
+		appInternal = false;
+	}
+
+	async function onCreateApp(event: Event) {
+		event.preventDefault();
+		isCreatingApp = true;
+
+		try {
+			const created = await Backend.createApp(
+				appName,
+				parseRedirectUris(appRedirectUris),
+				appType,
+				appEnabled,
+				appInternal
+			);
+			toast.success(stores.t('apps.created'));
+			showCreateApp = false;
+			resetCreateAppForm();
+			await goto(`/dashboard/settings/apps/${created.$id}`);
+		} catch (err: any) {
+			toast.error(err.message);
+		} finally {
+			isCreatingApp = false;
+		}
+	}
+
+	let appToDelete = $state<string | null>(null);
+	let isDeletingApp = $state(false);
+
+	async function onDeleteApp() {
+		if (!appToDelete) return;
+		isDeletingApp = true;
+
+		try {
+			await Backend.deleteApp(appToDelete);
+			toast.success(stores.t('apps.deleted'));
+			appToDelete = null;
+			await invalidate(Dependencies.APPS);
+		} catch (err: any) {
+			toast.error(err.message);
+		} finally {
+			isDeletingApp = false;
+		}
+	}
 
 	let originalName = $state(stores.profile?.name ?? '');
 	let originalSprite = $state(stores.profile?.avatarPixels);
@@ -149,7 +227,7 @@
 								<Select.Root type="single" name="locale" bind:value={selectedLocale}>
 									<Select.Trigger class="w-[180px]">{languages[selectedLocale]}</Select.Trigger>
 									<Select.Content>
-										{#each locales as locale}
+										{#each locales as locale (locale)}
 											<Select.Item value={locale} label={languages[locale]} />
 										{/each}
 									</Select.Content>
@@ -181,7 +259,153 @@
 			</Card.Root>
 		</form>
 	</div>
+
+	<h1 class="font-title mt-12 mb-6 flex-shrink-0 text-3xl">{stores.t('developer.settings')}</h1>
+	<div class="flex flex-col gap-6">
+		<Card.Root class="w-full">
+			<Card.Header class="flex flex-row items-start justify-between gap-4">
+				<div class="grid gap-1.5">
+					<Card.Title>{stores.t('apps.title')}</Card.Title>
+					<Card.Description>{stores.t('apps.description')}</Card.Description>
+				</div>
+				<Button onclick={() => (showCreateApp = true)} class="flex-shrink-0">
+					<PlusIcon class="size-4" />
+					{stores.t('apps.create')}
+				</Button>
+			</Card.Header>
+			<Card.Content>
+				{#if apps.length === 0}
+					<p class="text-muted-foreground py-6 text-center text-sm">{stores.t('apps.empty')}</p>
+				{:else}
+					<ul class="flex flex-col gap-2">
+						{#each apps as app (app.$id)}
+							<li
+								class="flex items-center justify-between gap-4 rounded-md border p-3 transition-colors"
+							>
+								<div class="flex min-w-0 flex-col gap-1">
+									<div class="flex items-center gap-2">
+										<span class="truncate font-medium">{app.name}</span>
+										{#if !app.enabled}
+											<Badge variant="secondary">{stores.t('apps.enabled')}: ✗</Badge>
+										{/if}
+										<Badge variant="outline">{app.type}</Badge>
+									</div>
+									<span class="text-muted-foreground truncate font-mono text-xs">{app.$id}</span>
+								</div>
+								<div class="flex flex-shrink-0 items-center gap-2">
+									<Button
+										variant="outline"
+										size="sm"
+										onclick={() => goto(`/dashboard/settings/apps/${app.$id}`)}
+									>
+										<SettingsIcon class="size-4" />
+										{stores.t('apps.manage')}
+									</Button>
+									<Button
+										variant="ghost"
+										size="icon"
+										aria-label={stores.t('apps.delete')}
+										onclick={() => (appToDelete = app.$id)}
+									>
+										<TrashIcon class="size-4" />
+									</Button>
+								</div>
+							</li>
+						{/each}
+					</ul>
+				{/if}
+			</Card.Content>
+		</Card.Root>
+	</div>
 </div>
+
+<Dialog.Root bind:open={showCreateApp}>
+	<Dialog.Content class="sm:max-w-[480px]">
+		<form onsubmit={onCreateApp}>
+			<Dialog.Header class="mb-4">
+				<Dialog.Title>{stores.t('apps.createTitle')}</Dialog.Title>
+				<Dialog.Description>{stores.t('apps.createDescription')}</Dialog.Description>
+			</Dialog.Header>
+
+			<div class="flex flex-col gap-4">
+				<div class="grid gap-2">
+					<Label for="app-name">{stores.t('apps.name')}</Label>
+					<Input
+						id="app-name"
+						type="text"
+						bind:value={appName}
+						placeholder={stores.t('apps.namePlaceholder')}
+						required
+					/>
+				</div>
+				<div class="grid gap-2">
+					<Label>{stores.t('apps.type')}</Label>
+					<Select.Root type="single" name="app-type" bind:value={appType}>
+						<Select.Trigger>
+							{appType === 'public'
+								? stores.t('apps.typePublic')
+								: stores.t('apps.typeConfidential')}
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Item value="confidential" label={stores.t('apps.typeConfidential')} />
+							<Select.Item value="public" label={stores.t('apps.typePublic')} />
+						</Select.Content>
+					</Select.Root>
+				</div>
+				<div class="grid gap-2">
+					<Label for="app-redirect">{stores.t('apps.redirectUris')}</Label>
+					<Textarea
+						id="app-redirect"
+						bind:value={appRedirectUris}
+						placeholder="https://example.com/oauth/callback"
+						rows={3}
+					/>
+					<p class="text-muted-foreground text-xs">{stores.t('apps.redirectUrisHint')}</p>
+				</div>
+				<div class="flex items-start gap-3">
+					<Switch id="app-enabled" bind:checked={appEnabled} />
+					<div class="grid gap-1">
+						<Label for="app-enabled">{stores.t('apps.enabled')}</Label>
+						<p class="text-muted-foreground text-sm">{stores.t('apps.enabledHint')}</p>
+					</div>
+				</div>
+				<div class="flex items-start gap-3">
+					<Switch id="app-internal" bind:checked={appInternal} />
+					<div class="grid gap-1">
+						<Label for="app-internal">{stores.t('apps.internal')}</Label>
+						<p class="text-muted-foreground text-sm">{stores.t('apps.internalHint')}</p>
+					</div>
+				</div>
+			</div>
+
+			<Dialog.Footer class="mt-6">
+				<Button type="submit" disabled={isCreatingApp || !appName.trim()}>
+					{stores.t('apps.create')}
+				</Button>
+			</Dialog.Footer>
+		</form>
+	</Dialog.Content>
+</Dialog.Root>
+
+<AlertDialog.Root
+	open={appToDelete !== null}
+	onOpenChange={(open) => {
+		if (!open) appToDelete = null;
+	}}
+>
+	<AlertDialog.Content>
+		<AlertDialog.Header>
+			<AlertDialog.Title>{stores.t('apps.deleteTitle')}</AlertDialog.Title>
+			<AlertDialog.Description>{stores.t('apps.deleteDescription')}</AlertDialog.Description>
+		</AlertDialog.Header>
+		<AlertDialog.Footer>
+			<AlertDialog.Cancel>{stores.t('ui.cancel')}</AlertDialog.Cancel>
+			<AlertDialog.Action onclick={onDeleteApp} disabled={isDeletingApp}>
+				{stores.t('apps.delete')}
+			</AlertDialog.Action>
+		</AlertDialog.Footer>
+	</AlertDialog.Content>
+</AlertDialog.Root>
 
 <Dialog.Root open={showEditor} onOpenChange={setShowEditor}>
 	<Dialog.Content class="sm:max-w-[425px]">
