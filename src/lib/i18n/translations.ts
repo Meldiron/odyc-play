@@ -20,8 +20,9 @@ export const translations = {
 
 		// Authentication
 		'auth.welcome': 'Welcome to Odyc.js Play',
-        'auth.welcomeDescription': 'Create and share your pixel-perfect games with your friends, colleagues, and community.',
-        'auth.email': 'Email',
+		'auth.welcomeDescription':
+			'Create and share your pixel-perfect games with your friends, colleagues, and community.',
+		'auth.email': 'Email',
 		'auth.signIn': 'Sign in',
 		'auth.continue': 'Continue',
 		'auth.or': 'Or',
@@ -227,7 +228,8 @@ export const translations = {
 		// Developer settings & OAuth2 Apps
 		'developer.settings': 'Developer settings',
 		'apps.title': 'OAuth2 Apps',
-		'apps.description': 'Register OAuth2 applications to let users sign in with their Odyc.js Play account.',
+		'apps.description':
+			'Register OAuth2 applications to let users sign in with their Odyc.js Play account.',
 		'apps.create': 'Create app',
 		'apps.createTitle': 'Create OAuth2 app',
 		'apps.createDescription': 'Register a new OAuth2 application.',
@@ -247,7 +249,8 @@ export const translations = {
 		'apps.manage': 'Manage',
 		'apps.delete': 'Delete',
 		'apps.deleteTitle': 'Delete this app?',
-		'apps.deleteDescription': 'This action cannot be undone. The app and all of its secrets will be permanently deleted, and any integration relying on it will stop working.',
+		'apps.deleteDescription':
+			'This action cannot be undone. The app and all of its secrets will be permanently deleted, and any integration relying on it will stop working.',
 		'apps.created': 'App created successfully.',
 		'apps.updated': 'App updated successfully.',
 		'apps.deleted': 'App deleted successfully.',
@@ -264,7 +267,8 @@ export const translations = {
 
 		// App secrets
 		'secrets.title': 'Client secrets',
-		'secrets.description': 'Secrets are used by confidential clients to authenticate. Treat them like passwords.',
+		'secrets.description':
+			'Secrets are used by confidential clients to authenticate. Treat them like passwords.',
 		'secrets.empty': 'This app has no client secrets yet.',
 		'secrets.create': 'Create secret',
 		'secrets.created': 'Secret created. Copy it now — it will not be shown again.',
@@ -278,9 +282,11 @@ export const translations = {
 		'secrets.copied': 'Copied to clipboard.',
 		'secrets.delete': 'Delete',
 		'secrets.deleteTitle': 'Delete this secret?',
-		'secrets.deleteDescription': 'This action cannot be undone. Any integration using this secret will stop working immediately.',
+		'secrets.deleteDescription':
+			'This action cannot be undone. Any integration using this secret will stop working immediately.',
 		'secrets.newSecretTitle': 'New client secret',
-		'secrets.newSecretDescription': 'Copy this secret now. For security reasons, you will not be able to see it again.',
+		'secrets.newSecretDescription':
+			'Copy this secret now. For security reasons, you will not be able to see it again.',
 		'secrets.done': 'Done'
 	},
 	fr: {
@@ -557,7 +563,7 @@ export const translations = {
 		// App secrets
 		'secrets.title': 'Secrets client',
 		'secrets.description':
-			'Les secrets sont utilisés par les clients confidentiels pour s\'authentifier. Traitez-les comme des mots de passe.',
+			"Les secrets sont utilisés par les clients confidentiels pour s'authentifier. Traitez-les comme des mots de passe.",
 		'secrets.empty': "Cette application n'a pas encore de secret client.",
 		'secrets.create': 'Créer un secret',
 		'secrets.created': 'Secret créé. Copiez-le maintenant — il ne sera plus affiché.',
