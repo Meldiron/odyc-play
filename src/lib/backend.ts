@@ -1,5 +1,6 @@
 import {
 	Account,
+	Apps,
 	AppwriteException,
 	Client,
 	Databases,
@@ -35,6 +36,7 @@ export class Backend {
 	static #account: Account = new Account(this.#client);
 	static #databases: Databases = new Databases(this.#client);
 	static #storage: Storage = new Storage(this.#client);
+	static #apps: Apps = new Apps(this.#client);
 
 	static async signInAnonymous() {
 		return await this.#account.createAnonymousSession();
@@ -282,5 +284,60 @@ export class Backend {
 			fileId,
 			text
 		});
+	}
+
+	// OAuth2 Apps
+	static async listApps() {
+		return await this.#apps.list();
+	}
+
+	static async getApp(appId: string) {
+		return await this.#apps.get({ appId });
+	}
+
+	static async createApp(
+		name: string,
+		redirectUris: string[],
+		type: 'confidential' | 'public',
+		enabled: boolean,
+		internal: boolean
+	) {
+		return await this.#apps.create({
+			appId: ID.unique(),
+			name,
+			redirectUris,
+			type,
+			enabled,
+			internal
+		});
+	}
+
+	static async updateApp(
+		appId: string,
+		params: {
+			name: string;
+			enabled?: boolean;
+			internal?: boolean;
+			redirectUris?: string[];
+			type?: 'confidential' | 'public';
+		}
+	) {
+		return await this.#apps.update({ appId, ...params });
+	}
+
+	static async deleteApp(appId: string) {
+		return await this.#apps.delete({ appId });
+	}
+
+	static async createAppSecret(appId: string) {
+		return await this.#apps.createSecret({ appId });
+	}
+
+	static async deleteAppSecret(appId: string, secretId: string) {
+		return await this.#apps.deleteSecret({ appId, secretId });
+	}
+
+	static async revokeAppTokens(appId: string) {
+		return await this.#apps.deleteTokens({ appId });
 	}
 }
