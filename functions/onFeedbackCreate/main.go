@@ -135,7 +135,7 @@ func Main(Context openruntimes.Context) openruntimes.Response {
 					},
 					{
 						Name:   "🔗 Quick Actions",
-						Value:  "[Feedback](https://cloud.appwrite.io/console/project-fra-odyc-play/databases/database-main/collection-feedbacks/document-" + body.Id + ") | [User](https://cloud.appwrite.io/console/project-fra-odyc-play/auth/user-" + user.Id + ")",
+						Value:  "[Feedback](https://fra.cloud.appwrite.io/console/project-fra-odyc-play/databases/database-main/collection-feedbacks/document-" + body.Id + ") | [User](https://fra.cloud.appwrite.io/console/project-fra-odyc-play/auth/user-" + user.Id + ")",
 						Inline: true,
 					},
 				},
