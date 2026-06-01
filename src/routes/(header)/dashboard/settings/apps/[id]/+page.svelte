@@ -264,53 +264,57 @@
 			</Card.Root>
 		</form>
 
-		<Card.Root class="w-full">
-			<Card.Header class="flex flex-row items-start justify-between gap-4">
-				<div class="grid gap-1.5">
-					<Card.Title>{stores.t('secrets.title')}</Card.Title>
-					<Card.Description>{stores.t('secrets.description')}</Card.Description>
-				</div>
-				<Button class="flex-shrink-0" disabled={isCreatingSecret} onclick={onCreateSecret}>
-					<PlusIcon class="size-4" />
-					{stores.t('secrets.create')}
-				</Button>
-			</Card.Header>
-			<Card.Content>
-				{#if app.secrets.length === 0}
-					<p class="text-muted-foreground py-6 text-center text-sm">{stores.t('secrets.empty')}</p>
-				{:else}
-					<Table.Root>
-						<Table.Header>
-							<Table.Row>
-								<Table.Head>{stores.t('secrets.secret')}</Table.Head>
-								<Table.Head>{stores.t('secrets.createdBy')}</Table.Head>
-								<Table.Head>{stores.t('secrets.lastUsed')}</Table.Head>
-								<Table.Head class="text-right"></Table.Head>
-							</Table.Row>
-						</Table.Header>
-						<Table.Body>
-							{#each app.secrets as secret (secret.$id)}
+		{#if app.type !== 'public'}
+			<Card.Root class="w-full">
+				<Card.Header class="flex flex-row items-start justify-between gap-4">
+					<div class="grid gap-1.5">
+						<Card.Title>{stores.t('secrets.title')}</Card.Title>
+						<Card.Description>{stores.t('secrets.description')}</Card.Description>
+					</div>
+					<Button class="flex-shrink-0" disabled={isCreatingSecret} onclick={onCreateSecret}>
+						<PlusIcon class="size-4" />
+						{stores.t('secrets.create')}
+					</Button>
+				</Card.Header>
+				<Card.Content>
+					{#if app.secrets.length === 0}
+						<p class="text-muted-foreground py-6 text-center text-sm">
+							{stores.t('secrets.empty')}
+						</p>
+					{:else}
+						<Table.Root>
+							<Table.Header>
 								<Table.Row>
-									<Table.Cell class="font-mono">•••••{secret.secret}</Table.Cell>
-									<Table.Cell>{secret.createdByName}</Table.Cell>
-									<Table.Cell>{formatDate(secret.lastAccessedAt)}</Table.Cell>
-									<Table.Cell class="text-right">
-										<Button
-											variant="ghost"
-											size="icon"
-											aria-label={stores.t('secrets.delete')}
-											onclick={() => (secretToDelete = secret.$id)}
-										>
-											<TrashIcon class="size-4" />
-										</Button>
-									</Table.Cell>
+									<Table.Head>{stores.t('secrets.secret')}</Table.Head>
+									<Table.Head>{stores.t('secrets.createdBy')}</Table.Head>
+									<Table.Head>{stores.t('secrets.lastUsed')}</Table.Head>
+									<Table.Head class="text-right"></Table.Head>
 								</Table.Row>
-							{/each}
-						</Table.Body>
-					</Table.Root>
-				{/if}
-			</Card.Content>
-		</Card.Root>
+							</Table.Header>
+							<Table.Body>
+								{#each app.secrets as secret (secret.$id)}
+									<Table.Row>
+										<Table.Cell class="font-mono">•••••{secret.secret}</Table.Cell>
+										<Table.Cell>{secret.createdByName}</Table.Cell>
+										<Table.Cell>{formatDate(secret.lastAccessedAt)}</Table.Cell>
+										<Table.Cell class="text-right">
+											<Button
+												variant="ghost"
+												size="icon"
+												aria-label={stores.t('secrets.delete')}
+												onclick={() => (secretToDelete = secret.$id)}
+											>
+												<TrashIcon class="size-4" />
+											</Button>
+										</Table.Cell>
+									</Table.Row>
+								{/each}
+							</Table.Body>
+						</Table.Root>
+					{/if}
+				</Card.Content>
+			</Card.Root>
+		{/if}
 
 		<Card.Root class="w-full">
 			<Card.Header>
