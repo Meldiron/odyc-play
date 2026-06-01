@@ -122,7 +122,8 @@ export class Backend {
 		return await this.#databases.createDocument<Profiles>('main', 'profiles', id, {
 			name,
 			avatarPixels,
-			userId
+			userId,
+			description: null
 		});
 	}
 
@@ -236,10 +237,13 @@ export class Backend {
 		const game = {
 			name,
 			slug: slugify(name).toLowerCase(),
-			ownerProfileId: stores.profile?.$id,
+			ownerProfileId: stores.profile?.$id ?? '',
 			code,
 			thumbnailFileId: thumbnailFileId ? thumbnailFileId : '/screenshot.png',
-			version: PUBLIC_ODYC_VERSION ?? 'latest'
+			version: PUBLIC_ODYC_VERSION ?? 'latest',
+			description: null,
+			howToPlay: null,
+			collaboratorProfileIds: null
 		};
 		try {
 			return await this.#databases.createDocument<Games>('main', 'games', ID.unique(), game);
