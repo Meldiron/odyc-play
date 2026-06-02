@@ -6,8 +6,8 @@ import type { Profiles } from '$lib/appwrite';
 
 // Public, OAuth2-protected API for reading and updating the authorizing user's
 // avatar. Access tokens are validated against the OAuth2 introspection endpoint
-// using the app's client credentials; the resulting subject is then acted upon
-// with the server API key.
+// using the server API key; the resulting subject is then acted upon with the
+// same key.
 
 const CORS = {
 	'Access-Control-Allow-Origin': '*',
@@ -31,15 +31,13 @@ function serverClient() {
 		.setKey(env.SSR_APPWRITE_API_KEY ?? '');
 }
 
-// RFC 7662 token introspection, authenticated with client_secret_basic.
+// RFC 7662 token introspection, authenticated with the server API key.
 async function introspect(token: string): Promise<Introspection | null> {
-	const credentials = btoa(`${env.SSR_OAUTH_CLIENT_ID ?? ''}:${env.SSR_OAUTH_CLIENT_SECRET ?? ''}`);
-
 	const res = await fetch(`${OAUTH2_BASE}/introspect`, {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			Authorization: `Basic ${credentials}`
+			'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? ''
 		},
 		body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString()
 	});

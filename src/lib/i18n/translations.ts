@@ -308,7 +308,6 @@ export const translations = {
 		'consent.signInDescription':
 			'An application is requesting access to your account. Please sign in to continue.',
 		'consent.redirecting': 'Redirecting…',
-		'consent.invalidRequest': 'This authorization request is invalid or has expired.',
 		'consent.scope.openid': 'Verify your identity',
 		'consent.scope.profile': 'Access your account name',
 		'consent.scope.email': 'Access your email address',
@@ -629,7 +628,6 @@ export const translations = {
 		'consent.signInDescription':
 			'Une application demande à accéder à votre compte. Veuillez vous connecter pour continuer.',
 		'consent.redirecting': 'Redirection…',
-		'consent.invalidRequest': "Cette demande d'autorisation est invalide ou a expiré.",
 		'consent.scope.openid': 'Vérifier votre identité',
 		'consent.scope.profile': 'Accéder au nom de votre compte',
 		'consent.scope.email': 'Accéder à votre adresse e-mail',

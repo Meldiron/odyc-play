@@ -14,7 +14,7 @@ import randomName from '@scaleway/random-name';
 import { type Games, type CommunityHighlights, type Profiles, type Feedback } from './appwrite';
 import slugify from 'slugify';
 import { stores } from './stores.svelte';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT } from './constants';
+import { APPWRITE_ENDPOINT, APPWRITE_PROJECT, OAUTH2_BASE } from './constants';
 import { PUBLIC_ODYC_VERSION } from '$env/static/public';
 import { generateAvatar } from './avatar';
 import type { Locale } from './i18n';
@@ -29,7 +29,7 @@ export type BackendUser = Models.User<BackendPrefs>;
 
 export class Backend {
 	// Connection
-	static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
+  static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
 
 	// Service SDKs
 	static #account: Account = new Account(this.#client);
@@ -343,5 +343,34 @@ export class Backend {
 
 	static async revokeAppTokens(appId: string) {
 		return await this.#apps.deleteTokens({ appId });
+	}
+
+	// TODO: Use OAuth2 class directly once it solves accept header, and project_id replacement
+	static async authorize(params: URLSearchParams): Promise<Models.Oauth2Authorize> {
+		return await this.#client.call(
+			'get',
+			new URL(`${OAUTH2_BASE}/authorize?${params.toString()}`),
+			{ Accept: 'application/json' }
+		);
+	}
+
+	// TODO: Use OAuth2 class directly once it solves accept header, and project_id replacement
+	static async approve(grantId: string): Promise<Models.Oauth2Approve> {
+		return await this.#client.call(
+			'post',
+			new URL(`${OAUTH2_BASE}/approve`),
+			{ Accept: 'application/json' },
+			{ grant_id: grantId }
+		);
+	}
+
+	// TODO: Use OAuth2 class directly once it solves accept header, and project_id replacement
+	static async reject(grantId: string): Promise<Models.Oauth2Reject> {
+		return await this.#client.call(
+			'post',
+			new URL(`${OAUTH2_BASE}/reject`),
+			{ Accept: 'application/json' },
+			{ grant_id: grantId }
+		);
 	}
 }
