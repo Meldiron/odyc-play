@@ -5,8 +5,7 @@
 	import { Input } from '$lib/components/ui/input/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import { Backend } from '$lib/backend';
-	import { invalidate } from '$app/navigation';
-	import { Dependencies } from '$lib/constants';
+	import { goto } from '$app/navigation';
 	import { type Models } from 'appwrite';
 	import * as InputOTP from '$lib/components/ui/input-otp/index.js';
 	import { REGEXP_ONLY_DIGITS } from 'bits-ui';
@@ -47,11 +46,19 @@
 				isLoading = false;
 			}
 		} else {
+			// Capture the target up front: it's derived from the current page's
+			// `redirect` param, so once we start navigating it would otherwise
+			// resolve to '/' and bounce the user to the dashboard.
+			const target = redirectTarget;
 			try {
 				await Backend.signInFinish(token?.userId ?? '', otp);
-				await invalidate(Dependencies.USER);
 
 				toast.success(stores.t('auth.signInSuccess'));
+				// Navigate ourselves to the post-login target (e.g. the OAuth2 consent
+				// screen). `invalidateAll` re-runs the destination's loads so the user
+				// state refreshes — no separate invalidate(), which would let the auth
+				// layout redirect first and clobber the consent state.
+				await goto(target, { invalidateAll: true });
 			} catch (err: any) {
 				error = err;
 			} finally {
@@ -71,10 +78,14 @@
 	async function onGuestSignIn() {
 		isLoading = true;
 		error = null;
+		// Same as the OTP flow: capture the target before navigating so the
+		// OAuth2 consent state in `redirect` survives instead of bouncing to the
+		// dashboard.
+		const target = redirectTarget;
 		try {
 			await Backend.signInAnonymous();
-			await invalidate(Dependencies.USER);
 			toast.success('Guest account created successfully.');
+			await goto(target, { invalidateAll: true });
 		} catch (err: any) {
 			error = err;
 		} finally {
