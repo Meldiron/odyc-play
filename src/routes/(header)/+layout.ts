@@ -14,14 +14,14 @@ export const load: LayoutLoad = async ({ depends }) => {
 	await stores.fetchUser();
 
 	if (stores.user) {
-		if (!stores.user.prefs.profileId) {
-			const profile = await Backend.createProfile(stores.user.$id, stores.user.name);
-			await Backend.updateProfileIdPrefs(profile.$id);
+		const hadProfile = Boolean(stores.user.prefs.profileId);
+		const profileId = await Backend.ensureProfile(stores.user);
+		// A freshly created profile means prefs changed server-side; refresh the
+		// user so `prefs.profileId` is reflected locally.
+		if (!hadProfile) {
 			await stores.fetchUser();
-			await stores.fetchProfile(profile.$id);
-		} else {
-			await stores.fetchProfile(stores.user.prefs.profileId);
 		}
+		await stores.fetchProfile(profileId);
 	}
 
 	let games: Models.DocumentList<Games> = {

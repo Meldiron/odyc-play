@@ -17,6 +17,12 @@ export const load: PageLoad = async ({ url, fetch }) => {
 		throw redirect(307, `/auth/sign-in?redirect=${encodeURIComponent(returnTo)}`);
 	}
 
+	// Users who sign in mid-consent (e.g. Email OTP) never pass through the
+	// dashboard layout that normally creates their profile. Ensure it exists
+	// before authorizing, so the OAuth2 token/claims step can't fail on a user
+	// that has no profile backing their account.
+	await Backend.ensureProfile(user);
+
 	if (!grantId) {
 		try {
 			const res = await Backend.authorize(url.searchParams);

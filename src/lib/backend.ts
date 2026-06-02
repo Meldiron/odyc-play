@@ -135,6 +135,20 @@ export class Backend {
 		});
 	}
 
+	// Guarantees the user has a profile and that `prefs.profileId` points to it,
+	// creating one on first sign-in. Both the dashboard layout and the OAuth2
+	// consent flow rely on this so a user can never complete sign-in (or grant
+	// OAuth access) without a profile backing their account.
+	static async ensureProfile(user: BackendUser): Promise<string> {
+		if (user.prefs.profileId) {
+			return user.prefs.profileId;
+		}
+
+		const profile = await this.createProfile(user.$id, user.name);
+		await this.updateProfileIdPrefs(profile.$id);
+		return profile.$id;
+	}
+
 	static async listGames(queries: string[]) {
 		return await this.#databases.listDocuments<Games>('main', 'games', queries);
 	}
