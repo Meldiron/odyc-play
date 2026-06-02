@@ -14,7 +14,7 @@ import randomName from '@scaleway/random-name';
 import { type Games, type CommunityHighlights, type Profiles, type Feedback } from './appwrite';
 import slugify from 'slugify';
 import { stores } from './stores.svelte';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT, OAUTH2_BASE } from './constants';
+import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from './constants';
 import { PUBLIC_ODYC_VERSION } from '$env/static/public';
 import { generateAvatar } from './avatar';
 import type { Locale } from './i18n';
@@ -29,7 +29,7 @@ export type BackendUser = Models.User<BackendPrefs>;
 
 export class Backend {
 	// Connection
-  static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT);
+  static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT_ID);
 
 	// Service SDKs
 	static #account: Account = new Account(this.#client);

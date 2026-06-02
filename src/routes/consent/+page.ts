@@ -1,6 +1,6 @@
 import type { PageLoad } from './$types';
 import { Backend } from '$lib/backend';
-import { APPWRITE_PROJECT } from '$lib/constants';
+import { APPWRITE_PROJECT_ID } from '$lib/constants';
 import { redirect } from '@sveltejs/kit';
 import { AppwriteException } from 'appwrite';
 
@@ -56,7 +56,7 @@ export const load: PageLoad = async ({ url, fetch }) => {
 			.split(' ')
 			.map((s) => s.trim())
 			.filter(Boolean),
-		projectId: APPWRITE_PROJECT,
+		projectId: APPWRITE_PROJECT_ID,
 		appName
 	};
 };

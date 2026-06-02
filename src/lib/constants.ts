@@ -8,10 +8,12 @@ export enum Dependencies {
 	APP = 'dependency:app'
 }
 
+import { PUBLIC_APPWRITE_ENDPOINT, PUBLIC_APPWRITE_PROJECT_ID } from '$env/static/public';
+
 // Appwrite connection (single source of truth)
-export const APPWRITE_ENDPOINT = 'https://fra.cloud.appwrite.io/v1';
-export const APPWRITE_PROJECT = 'odyc-play';
-export const OAUTH2_BASE = `${APPWRITE_ENDPOINT}/oauth2/${APPWRITE_PROJECT}`;
+export const APPWRITE_ENDPOINT = PUBLIC_APPWRITE_ENDPOINT;
+export const APPWRITE_PROJECT_ID = PUBLIC_APPWRITE_PROJECT_ID;
+export const OAUTH2_BASE = `${APPWRITE_ENDPOINT}/oauth2/${APPWRITE_PROJECT_ID}`;
 
 export const DefaultProfilePicture = `
   99999999

@@ -1,6 +1,6 @@
 import { Apps, Client } from 'node-appwrite';
 import { SSR_APPWRITE_API_KEY } from '$env/static/private';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT } from '$lib/constants';
+import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID } from '$lib/constants';
 import { json } from '@sveltejs/kit';
 
 // Resolves the public-facing details of an OAuth2 app by its client id.
@@ -15,7 +15,7 @@ export async function GET({ url }) {
 
 	const client = new Client()
 		.setEndpoint(APPWRITE_ENDPOINT)
-		.setProject(APPWRITE_PROJECT)
+		.setProject(APPWRITE_PROJECT_ID)
 		.setKey(SSR_APPWRITE_API_KEY);
 
 	const apps = new Apps(client);

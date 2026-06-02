@@ -1,6 +1,6 @@
 import { Client, Databases, Users } from 'node-appwrite';
 import { env } from '$env/dynamic/private';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT, OAUTH2_BASE } from '$lib/constants';
+import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
 import { json } from '@sveltejs/kit';
 import type { Profiles } from '$lib/appwrite';
 
@@ -27,7 +27,7 @@ type Introspection = {
 function serverClient() {
 	return new Client()
 		.setEndpoint(APPWRITE_ENDPOINT)
-		.setProject(APPWRITE_PROJECT)
+		.setProject(APPWRITE_PROJECT_ID)
 		.setKey(env.SSR_APPWRITE_API_KEY ?? '');
 }
 
