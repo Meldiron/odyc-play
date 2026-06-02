@@ -37,7 +37,8 @@ async function introspect(token: string): Promise<Introspection | null> {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? ''
+      'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? '',
+			'x-appwrite-project': APPWRITE_PROJECT_ID ?? '',
 		},
 		body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString()
 	});

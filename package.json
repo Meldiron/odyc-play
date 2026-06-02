@@ -76,7 +76,7 @@
 		"@scaleway/random-name": "^5.1.2",
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@typescript/vfs": "^1.6.1",
-		"appwrite": "https://pkg.vc/-/@appwrite/appwrite@8eea64e",
+		"appwrite": "https://pkg.vc/-/@appwrite/appwrite@c9459ac",
 		"codemirror": "^6.0.2",
 		"codemirror-theme-vars": "^0.1.2",
 		"friendly-words": "^1.3.1",
