@@ -5,6 +5,7 @@ import {
 	Client,
 	Databases,
 	ID,
+	Oauth2,
 	OAuthProvider,
 	Query,
 	Storage,
@@ -14,7 +15,7 @@ import randomName from '@scaleway/random-name';
 import { type Games, type CommunityHighlights, type Profiles, type Feedback } from './appwrite';
 import slugify from 'slugify';
 import { stores } from './stores.svelte';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from './constants';
+import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID } from './constants';
 import { PUBLIC_ODYC_VERSION } from '$env/static/public';
 import { generateAvatar } from './avatar';
 import type { Locale } from './i18n';
@@ -36,6 +37,7 @@ export class Backend {
 	static #databases: Databases = new Databases(this.#client);
 	static #storage: Storage = new Storage(this.#client);
 	static #apps: Apps = new Apps(this.#client);
+	static #oauth2: Oauth2 = new Oauth2(this.#client);
 
 	static async signInAnonymous() {
 		return await this.#account.createAnonymousSession();
@@ -345,32 +347,28 @@ export class Backend {
 		return await this.#apps.deleteTokens({ appId });
 	}
 
-	// TODO: Use OAuth2 class directly once it solves accept header, and project_id replacement
 	static async authorize(params: URLSearchParams): Promise<Models.Oauth2Authorize> {
-		return await this.#client.call(
-			'get',
-			new URL(`${OAUTH2_BASE}/authorize?${params.toString()}`),
-			{ Accept: 'application/json' }
-		);
+		const maxAge = params.get('max_age');
+		return await this.#oauth2.authorize({
+			projectId: APPWRITE_PROJECT_ID,
+			clientId: params.get('client_id') ?? '',
+			redirectUri: params.get('redirect_uri') ?? '',
+			responseType: params.get('response_type') ?? '',
+			scope: params.get('scope') ?? '',
+			state: params.get('state') ?? undefined,
+			nonce: params.get('nonce') ?? undefined,
+			codeChallenge: params.get('code_challenge') ?? undefined,
+			codeChallengeMethod: params.get('code_challenge_method') ?? undefined,
+			prompt: params.get('prompt') ?? undefined,
+			maxAge: maxAge !== null ? Number(maxAge) : undefined
+		});
 	}
 
-	// TODO: Use OAuth2 class directly once it solves accept header, and project_id replacement
 	static async approve(grantId: string): Promise<Models.Oauth2Approve> {
-		return await this.#client.call(
-			'post',
-			new URL(`${OAUTH2_BASE}/approve`),
-			{ Accept: 'application/json' },
-			{ grant_id: grantId }
-		);
+		return await this.#oauth2.approve({ projectId: APPWRITE_PROJECT_ID, grantId });
 	}
 
-	// TODO: Use OAuth2 class directly once it solves accept header, and project_id replacement
 	static async reject(grantId: string): Promise<Models.Oauth2Reject> {
-		return await this.#client.call(
-			'post',
-			new URL(`${OAUTH2_BASE}/reject`),
-			{ Accept: 'application/json' },
-			{ grant_id: grantId }
-		);
+		return await this.#oauth2.reject({ projectId: APPWRITE_PROJECT_ID, grantId });
 	}
 }
