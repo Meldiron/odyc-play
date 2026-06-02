@@ -30,7 +30,7 @@ export type BackendUser = Models.User<BackendPrefs>;
 
 export class Backend {
 	// Connection
-  static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT_ID);
+	static #client = new Client().setEndpoint(APPWRITE_ENDPOINT).setProject(APPWRITE_PROJECT_ID);
 
 	// Service SDKs
 	static #account: Account = new Account(this.#client);
