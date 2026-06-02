@@ -1,448 +1,498 @@
 {
-	"projectId": "odyc-play",
-	"projectName": "Odyc.js Play",
-	"endpoint": "https://fra.cloud.appwrite.io/v1",
-	"settings": {
-		"services": {
-			"account": true,
-			"avatars": false,
-			"databases": true,
-			"locale": false,
-			"health": false,
-			"storage": true,
-			"teams": false,
-			"users": true,
-			"sites": true,
-			"functions": true,
-			"graphql": true,
-			"messaging": false
-		},
-		"auth": {
-			"methods": {
-				"jwt": true,
-				"phone": false,
-				"invites": false,
-				"anonymous": true,
-				"email-otp": true,
-				"magic-url": false,
-				"email-password": false
-			},
-			"security": {
-				"duration": 31536000,
-				"limit": 0,
-				"sessionsLimit": 10,
-				"passwordHistory": 0,
-				"passwordDictionary": false,
-				"personalDataCheck": false,
-				"sessionAlerts": false,
-				"mockNumbers": []
-			}
-		}
-	},
-	"functions": [
-		{
-			"$id": "onFeedbackCreate",
-			"name": "onFeedbackCreate",
-			"runtime": "go-1.23",
-			"buildSpecification": "s-4vcpu-4gb",
-			"runtimeSpecification": "s-4vcpu-4gb",
-			"execute": [],
-			"events": ["databases.main.collections.feedbacks.documents.*.create"],
-			"scopes": ["users.read"],
-			"schedule": "",
-			"timeout": 15,
-			"enabled": true,
-			"logging": true,
-			"entrypoint": "main.go",
-			"commands": "",
-			"path": "functions/onFeedbackCreate"
-		},
-		{
-			"$id": "ogImage",
-			"name": "ogImage",
-			"runtime": "node-22",
-			"buildSpecification": "s-4vcpu-4gb",
-			"runtimeSpecification": "s-4vcpu-4gb",
-			"execute": ["any"],
-			"events": [],
-			"scopes": ["documents.read"],
-			"schedule": "",
-			"timeout": 15,
-			"enabled": true,
-			"logging": true,
-			"entrypoint": "dist/main.js",
-			"commands": "npm run bundle",
-			"path": "functions/ogImage"
-		}
-	],
-	"sites": [
-		{
-			"$id": "6861946a003c2d835173",
-			"name": "odyc",
-			"logging": true,
-			"framework": "sveltekit",
-			"timeout": 30,
-			"installCommand": "bun install",
-			"buildCommand": "bun run build",
-			"outputDirectory": "./build",
-			"deploymentRetention": 0,
-			"buildSpecification": "s-4vcpu-4gb",
-			"runtimeSpecification": "s-4vcpu-4gb",
-			"buildRuntime": "node-25",
-			"adapter": "ssr",
-			"fallbackFile": "",
-			"path": "./",
-			"startCommand": "bash helpers/sveltekit/server.sh"
-		}
-	],
-	"databases": [
-		{
-			"$id": "main",
-			"name": "main",
-			"$createdAt": "2026-05-30T22:05:00.157+00:00",
-			"$updatedAt": "2026-05-30T22:05:00.157+00:00",
-			"enabled": true,
-			"type": "legacy",
-			"policies": [],
-			"archives": []
-		}
-	],
-	"collections": [
-		{
-			"$id": "communityHighlights",
-			"$permissions": ["read(\"users\")"],
-			"databaseId": "main",
-			"name": "communityHighlights",
-			"enabled": true,
-			"documentSecurity": false,
-			"attributes": [
-				{
-					"key": "gameId",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.520+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.520+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				}
-			],
-			"indexes": [],
-			"bytesMax": 65535,
-			"bytesUsed": 1196
-		},
-		{
-			"$id": "games",
-			"$permissions": ["create(\"users\")", "read(\"any\")"],
-			"databaseId": "main",
-			"name": "games",
-			"enabled": true,
-			"documentSecurity": true,
-			"attributes": [
-				{
-					"key": "name",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 64,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "thumbnailFileId",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "ownerProfileId",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "description",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T23:00:22.570+00:00",
-					"size": 2048,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "howToPlay",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T23:00:39.124+00:00",
-					"size": 2048,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "slug",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 64,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "collaboratorProfileIds",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": true,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "code",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 1000000,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "version",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.561+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.561+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				}
-			],
-			"indexes": [
-				{
-					"$id": "133275_2_ownerProfileId",
-					"$createdAt": "2026-05-30T22:05:01.586+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.586+00:00",
-					"key": "ownerProfileId",
-					"type": "key",
-					"status": "available",
-					"error": "",
-					"attributes": ["ownerProfileId"],
-					"lengths": [0],
-					"orders": ["ASC"]
-				},
-				{
-					"$id": "133275_2_slug",
-					"$createdAt": "2026-05-30T22:05:01.586+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.586+00:00",
-					"key": "slug",
-					"type": "unique",
-					"status": "available",
-					"error": "",
-					"attributes": ["slug"],
-					"lengths": [0],
-					"orders": ["ASC"]
-				}
-			],
-			"bytesMax": 65535,
-			"bytesUsed": 18396
-		},
-		{
-			"$id": "profiles",
-			"$permissions": ["create(\"users\")", "read(\"any\")"],
-			"databaseId": "main",
-			"name": "profiles",
-			"enabled": true,
-			"documentSecurity": true,
-			"attributes": [
-				{
-					"key": "name",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.543+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.543+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "avatarPixels",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.543+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.543+00:00",
-					"size": 255,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "description",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.543+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.543+00:00",
-					"size": 10000,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "userId",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.543+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.543+00:00",
-					"size": 36,
-					"default": null,
-					"encrypt": false
-				}
-			],
-			"indexes": [
-				{
-					"$id": "133275_3_userId",
-					"$createdAt": "2026-05-30T22:05:01.568+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.568+00:00",
-					"key": "userId",
-					"type": "key",
-					"status": "available",
-					"error": "",
-					"attributes": ["userId"],
-					"lengths": [0],
-					"orders": ["ASC"]
-				},
-				{
-					"$id": "133275_3_name",
-					"$createdAt": "2026-05-30T22:05:01.568+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.568+00:00",
-					"key": "name",
-					"type": "key",
-					"status": "available",
-					"error": "",
-					"attributes": ["name"],
-					"lengths": [0],
-					"orders": ["ASC"]
-				}
-			],
-			"bytesMax": 65535,
-			"bytesUsed": 42364
-		},
-		{
-			"$id": "feedbacks",
-			"$permissions": ["create(\"users\")"],
-			"databaseId": "main",
-			"name": "feedbacks",
-			"enabled": true,
-			"documentSecurity": false,
-			"attributes": [
-				{
-					"key": "text",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": true,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.547+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.547+00:00",
-					"size": 10000,
-					"default": null,
-					"encrypt": false
-				},
-				{
-					"key": "fileId",
-					"type": "string",
-					"status": "available",
-					"error": "",
-					"required": false,
-					"array": false,
-					"$createdAt": "2026-05-30T22:05:01.547+00:00",
-					"$updatedAt": "2026-05-30T22:05:01.547+00:00",
-					"size": 32,
-					"default": null,
-					"encrypt": false
-				}
-			],
-			"indexes": [],
-			"bytesMax": 65535,
-			"bytesUsed": 41198
-		}
-	],
-	"buckets": [
-		{
-			"$id": "screenshots",
-			"$permissions": ["read(\"any\")", "create(\"users\")"],
-			"fileSecurity": false,
-			"name": "screenshots",
-			"enabled": true,
-			"maximumFileSize": 10000000,
-			"allowedFileExtensions": ["png"],
-			"compression": "none",
-			"encryption": true,
-			"antivirus": true
-		},
-		{
-			"$id": "feedbacks",
-			"$permissions": ["create(\"users\")", "read(\"guests\")"],
-			"fileSecurity": false,
-			"name": "feedbacks",
-			"enabled": true,
-			"maximumFileSize": 10000000,
-			"allowedFileExtensions": [],
-			"compression": "none",
-			"encryption": true,
-			"antivirus": true
-		}
-	]
+    "projectId": "odyc-play",
+    "projectName": "Odyc.js Play",
+    "endpoint": "https://fra.cloud.appwrite.io/v1",
+    "settings": {
+        "services": {
+            "account": true,
+            "avatars": false,
+            "databases": true,
+            "locale": false,
+            "health": false,
+            "storage": true,
+            "teams": false,
+            "users": true,
+            "sites": true,
+            "functions": true,
+            "graphql": true,
+            "messaging": false
+        },
+        "auth": {
+            "methods": {
+                "jwt": true,
+                "phone": false,
+                "invites": false,
+                "anonymous": true,
+                "email-otp": true,
+                "magic-url": false,
+                "email-password": false
+            },
+            "security": {
+                "duration": 31536000,
+                "limit": 0,
+                "sessionsLimit": 10,
+                "passwordHistory": 0,
+                "passwordDictionary": false,
+                "personalDataCheck": false,
+                "sessionAlerts": false,
+                "mockNumbers": []
+            }
+        }
+    },
+    "functions": [
+        {
+            "$id": "onFeedbackCreate",
+            "name": "onFeedbackCreate",
+            "runtime": "go-1.23",
+            "buildSpecification": "s-4vcpu-4gb",
+            "runtimeSpecification": "s-4vcpu-4gb",
+            "execute": [],
+            "events": [
+                "databases.main.collections.feedbacks.documents.*.create"
+            ],
+            "scopes": [
+                "users.read"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "main.go",
+            "commands": "",
+            "path": "functions/onFeedbackCreate"
+        },
+        {
+            "$id": "ogImage",
+            "name": "ogImage",
+            "runtime": "node-22",
+            "buildSpecification": "s-4vcpu-4gb",
+            "runtimeSpecification": "s-4vcpu-4gb",
+            "execute": [
+                "any"
+            ],
+            "events": [],
+            "scopes": [
+                "documents.read"
+            ],
+            "schedule": "",
+            "timeout": 15,
+            "enabled": true,
+            "logging": true,
+            "entrypoint": "dist/main.js",
+            "commands": "npm run bundle",
+            "path": "functions/ogImage"
+        }
+    ],
+    "sites": [
+        {
+            "$id": "6861946a003c2d835173",
+            "name": "odyc",
+            "logging": true,
+            "framework": "sveltekit",
+            "timeout": 30,
+            "installCommand": "bun install",
+            "buildCommand": "bun run build",
+            "outputDirectory": "./build",
+            "deploymentRetention": 0,
+            "buildSpecification": "s-4vcpu-4gb",
+            "runtimeSpecification": "s-4vcpu-4gb",
+            "buildRuntime": "node-25",
+            "adapter": "ssr",
+            "fallbackFile": "",
+            "path": "./",
+            "startCommand": "bash helpers/sveltekit/server.sh"
+        }
+    ],
+    "databases": [
+        {
+            "$id": "main",
+            "name": "main",
+            "$createdAt": "2026-05-30T22:05:00.157+00:00",
+            "$updatedAt": "2026-05-30T22:05:00.157+00:00",
+            "enabled": true,
+            "type": "legacy",
+            "policies": [],
+            "archives": []
+        }
+    ],
+    "collections": [
+        {
+            "$id": "communityHighlights",
+            "$permissions": [
+                "read(\"users\")"
+            ],
+            "databaseId": "main",
+            "name": "communityHighlights",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "gameId",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.520+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.520+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": [],
+            "bytesMax": 65535,
+            "bytesUsed": 1196
+        },
+        {
+            "$id": "games",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"any\")"
+            ],
+            "databaseId": "main",
+            "name": "games",
+            "enabled": true,
+            "documentSecurity": true,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "thumbnailFileId",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "ownerProfileId",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T23:00:22.570+00:00",
+                    "size": 2048,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "howToPlay",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T23:00:39.124+00:00",
+                    "size": 2048,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "slug",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 64,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "collaboratorProfileIds",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": true,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "code",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 1000000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "version",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": [
+                {
+                    "$id": "133275_2_ownerProfileId",
+                    "$createdAt": "2026-05-30T22:05:01.586+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.586+00:00",
+                    "key": "ownerProfileId",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "ownerProfileId"
+                    ],
+                    "lengths": [
+                        0
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "$id": "133275_2_slug",
+                    "$createdAt": "2026-05-30T22:05:01.586+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.586+00:00",
+                    "key": "slug",
+                    "type": "unique",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "slug"
+                    ],
+                    "lengths": [
+                        0
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ],
+            "bytesMax": 65535,
+            "bytesUsed": 18396
+        },
+        {
+            "$id": "profiles",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"any\")"
+            ],
+            "databaseId": "main",
+            "name": "profiles",
+            "enabled": true,
+            "documentSecurity": true,
+            "attributes": [
+                {
+                    "key": "name",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.543+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.543+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "avatarPixels",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.543+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.543+00:00",
+                    "size": 255,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.543+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.543+00:00",
+                    "size": 10000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "userId",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.543+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.543+00:00",
+                    "size": 36,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": [
+                {
+                    "$id": "133275_3_userId",
+                    "$createdAt": "2026-05-30T22:05:01.568+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.568+00:00",
+                    "key": "userId",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "userId"
+                    ],
+                    "lengths": [
+                        0
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                },
+                {
+                    "$id": "133275_3_name",
+                    "$createdAt": "2026-05-30T22:05:01.568+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.568+00:00",
+                    "key": "name",
+                    "type": "key",
+                    "status": "available",
+                    "error": "",
+                    "attributes": [
+                        "name"
+                    ],
+                    "lengths": [
+                        0
+                    ],
+                    "orders": [
+                        "ASC"
+                    ]
+                }
+            ],
+            "bytesMax": 65535,
+            "bytesUsed": 42364
+        },
+        {
+            "$id": "feedbacks",
+            "$permissions": [
+                "create(\"users\")"
+            ],
+            "databaseId": "main",
+            "name": "feedbacks",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "text",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": true,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.547+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.547+00:00",
+                    "size": 10000,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "fileId",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.547+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.547+00:00",
+                    "size": 32,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": [],
+            "bytesMax": 65535,
+            "bytesUsed": 41198
+        }
+    ],
+    "buckets": [
+        {
+            "$id": "screenshots",
+            "$permissions": [
+                "read(\"any\")",
+                "create(\"users\")"
+            ],
+            "fileSecurity": false,
+            "name": "screenshots",
+            "enabled": true,
+            "maximumFileSize": 10000000,
+            "allowedFileExtensions": [
+                "png"
+            ],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": true
+        },
+        {
+            "$id": "feedbacks",
+            "$permissions": [
+                "create(\"users\")",
+                "read(\"guests\")"
+            ],
+            "fileSecurity": false,
+            "name": "feedbacks",
+            "enabled": true,
+            "maximumFileSize": 10000000,
+            "allowedFileExtensions": [],
+            "compression": "none",
+            "encryption": true,
+            "antivirus": true
+        }
+    ]
 }
