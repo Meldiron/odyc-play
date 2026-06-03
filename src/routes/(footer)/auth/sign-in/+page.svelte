@@ -11,6 +11,7 @@
 	import { REGEXP_ONLY_DIGITS } from 'bits-ui';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import * as Alert from '$lib/components/ui/alert/index.js';
+	import * as AlertDialog from '$lib/components/ui/alert-dialog/index.js';
 	import AlertCircleIcon from '@lucide/svelte/icons/alert-circle';
 	import { toast } from 'svelte-sonner';
 	import { stores } from '$lib/stores.svelte';
@@ -29,6 +30,8 @@
 
 	let token = $state<null | Models.Token>(null);
 	let step = $state<1 | 2>(1);
+
+	let showGuestDialog = $state(false);
 
 	async function onMagicSignIn(event: Event) {
 		event.preventDefault();
@@ -188,7 +191,7 @@
 					<div class="grid gap-4 sm:grid-cols-2">
 						<Button
 							disabled={isLoading}
-							onclick={onGuestSignIn}
+							onclick={() => (showGuestDialog = true)}
 							variant="outline"
 							type="button"
 							class="!disabled:opacity-50 w-full  border-dashed !bg-transparent"
@@ -209,6 +212,23 @@
 					</div>
 				</div>
 			</form>
+
+			<AlertDialog.Root bind:open={showGuestDialog}>
+				<AlertDialog.Content>
+					<AlertDialog.Header>
+						<AlertDialog.Title>{stores.t('auth.anonymousConfirmTitle')}</AlertDialog.Title>
+						<AlertDialog.Description>
+							{stores.t('auth.anonymousConfirmDescription')}
+						</AlertDialog.Description>
+					</AlertDialog.Header>
+					<AlertDialog.Footer>
+						<AlertDialog.Cancel>{stores.t('ui.cancel')}</AlertDialog.Cancel>
+						<AlertDialog.Action onclick={onGuestSignIn} disabled={isLoading}>
+							{stores.t('auth.anonymousContinue')}
+						</AlertDialog.Action>
+					</AlertDialog.Footer>
+				</AlertDialog.Content>
+			</AlertDialog.Root>
 
 			<!--
 			TODO: Add legal documents, eventuelly

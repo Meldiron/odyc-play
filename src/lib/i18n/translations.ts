@@ -31,6 +31,9 @@ export const translations = {
 		'auth.signInSuccess': 'Successfully signed in. Welcome!',
 		'auth.enterCode': 'Enter the 6-digit code sent to your email',
 		'auth.anonymousContinue': 'Continue as guest',
+		'auth.anonymousConfirmTitle': 'Continue as guest?',
+		'auth.anonymousConfirmDescription':
+			'A guest account will be lost when you switch devices, and cannot be used to authorize external applications with "Sign in with Odyc.js". You can connect it to a GitHub account later to claim it permanently.',
 		'auth.guestAccountWarning': 'You are using guest account!',
 		'auth.guestAccountDescription':
 			'Everything you do is saved, but only this computer can access it.',
@@ -345,6 +348,9 @@ export const translations = {
 		'auth.signInSuccess': 'Connexion réussie. Bienvenue !',
 		'auth.enterCode': 'Entrez le code à 6 chiffres envoyé à votre email',
 		'auth.anonymousContinue': "Continuer en tant qu'invité",
+		'auth.anonymousConfirmTitle': "Continuer en tant qu'invité ?",
+		'auth.anonymousConfirmDescription':
+			"Un compte invité sera perdu lorsque vous changerez d'appareil et ne peut pas être utilisé pour autoriser des applications externes avec « Se connecter avec Odyc.js ». Vous pourrez le connecter à un compte GitHub plus tard pour le revendiquer définitivement.",
 		'auth.guestAccountWarning': 'Vous utilisez un compte invité !',
 		'auth.guestAccountDescription':
 			'Tout ce que vous faites est sauvegardé, mais seul cet ordinateur peut y accéder.',
