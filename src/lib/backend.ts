@@ -307,8 +307,8 @@ export class Backend {
 	}
 
 	// OAuth2 Apps
-	static async listApps() {
-		return await this.#apps.list();
+	static async listApps(userId: string) {
+		return await this.#apps.list({ queries: [Query.equal('userId', userId)] });
 	}
 
 	static async getApp(appId: string) {
