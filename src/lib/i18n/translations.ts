@@ -316,7 +316,13 @@ export const translations = {
 		'consent.scope.profile': 'Access your account name',
 		'consent.scope.email': 'Access your email address',
 		'consent.scope.profileRead': 'Read your account information',
-		'consent.scope.profileWrite': 'Update your account information'
+		'consent.scope.profileWrite': 'Update your account information',
+		// OAuth2 device flow
+		'device.heading': 'Connect a device',
+		'device.description': 'Enter the code shown on your device to continue.',
+		'device.codeLabel': 'Device code',
+		'device.continue': 'Continue',
+		'device.invalidCode': 'That code is invalid or has expired. Check your device and try again.'
 	},
 	fr: {
 		// Overview
@@ -640,6 +646,13 @@ export const translations = {
 		'consent.scope.profile': 'Accéder au nom de votre compte',
 		'consent.scope.email': 'Accéder à votre adresse e-mail',
 		'consent.scope.profileRead': 'Lire les informations de votre compte',
-		'consent.scope.profileWrite': 'Mettre à jour les informations de votre compte'
+		'consent.scope.profileWrite': 'Mettre à jour les informations de votre compte',
+		// OAuth2 device flow
+		'device.heading': 'Connecter un appareil',
+		'device.description': "Saisissez le code affiché sur votre appareil pour continuer.",
+		'device.codeLabel': 'Code de l\'appareil',
+		'device.continue': 'Continuer',
+		'device.invalidCode':
+			"Ce code est invalide ou a expiré. Vérifiez votre appareil et réessayez."
 	}
 } as const;

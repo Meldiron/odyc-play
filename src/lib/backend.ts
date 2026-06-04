@@ -376,6 +376,10 @@ export class Backend {
 		});
 	}
 
+	static async createGrant(userCode: string): Promise<Models.Oauth2Grant> {
+		return await this.#oauth2.createGrant({ projectId: APPWRITE_PROJECT_ID, userCode });
+	}
+
 	static async getGrant(grantId: string): Promise<Models.Oauth2Grant> {
 		return await this.#oauth2.getGrant({ projectId: APPWRITE_PROJECT_ID, grantId });
 	}
