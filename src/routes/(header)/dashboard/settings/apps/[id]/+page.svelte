@@ -31,7 +31,7 @@
 	);
 	let redirectUris = $state(data.app.redirectUris.join('\n'));
 	let enabled = $state(data.app.enabled);
-	let internal = $state(data.app.internal);
+	let deviceFlow = $state(data.app.deviceFlow);
 
 	let isSaving = $state(false);
 
@@ -56,7 +56,7 @@
 		name !== app.name ||
 			type !== app.type ||
 			enabled !== app.enabled ||
-			internal !== app.internal ||
+			deviceFlow !== app.deviceFlow ||
 			redirectUris !== app.redirectUris.join('\n')
 	);
 
@@ -69,7 +69,7 @@
 				name,
 				type,
 				enabled,
-				internal,
+				deviceFlow,
 				redirectUris: parseRedirectUris(redirectUris)
 			});
 			toast.success(stores.t('apps.updated'));
@@ -248,10 +248,10 @@
 							</div>
 						</div>
 						<div class="flex items-start gap-3">
-							<Switch id="app-internal" bind:checked={internal} />
+							<Switch id="app-device-flow" bind:checked={deviceFlow} />
 							<div class="grid gap-1">
-								<Label for="app-internal">{stores.t('apps.internal')}</Label>
-								<p class="text-muted-foreground text-sm">{stores.t('apps.internalHint')}</p>
+								<Label for="app-device-flow">{stores.t('apps.deviceFlow')}</Label>
+								<p class="text-muted-foreground text-sm">{stores.t('apps.deviceFlowHint')}</p>
 							</div>
 						</div>
 					</div>
@@ -294,7 +294,7 @@
 							<Table.Body>
 								{#each app.secrets as secret (secret.$id)}
 									<Table.Row>
-										<Table.Cell class="font-mono">•••••{secret.secret}</Table.Cell>
+										<Table.Cell class="font-mono">•••••{secret.hint}</Table.Cell>
 										<Table.Cell>{secret.createdByName}</Table.Cell>
 										<Table.Cell>{formatDate(secret.lastAccessedAt)}</Table.Cell>
 										<Table.Cell class="text-right">

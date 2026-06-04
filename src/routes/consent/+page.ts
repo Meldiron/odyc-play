@@ -6,10 +6,8 @@ import { AppwriteException } from 'appwrite';
 
 export const ssr = false;
 
-export const load: PageLoad = async ({ url, fetch }) => {
+export const load: PageLoad = async ({ url }) => {
 	let grantId = url.searchParams.get('grant_id');
-	const clientId = url.searchParams.get('client_id');
-	const scope = url.searchParams.get('scope') ?? '';
 
 	const user = await Backend.getUserSafe();
 	if (!user) {
@@ -42,26 +40,21 @@ export const load: PageLoad = async ({ url, fetch }) => {
 		}
 	}
 
+	// The grant carries the scopes the user is being asked to consent to, plus
+	// the app it was created for. Resolve the app's display name separately.
+	const grant = await Backend.getGrant(grantId);
+
 	let appName: string | null = null;
-	if (clientId) {
-		try {
-			// SSR endpoint as it needs Appwrite API key
-			const res = await fetch(`/api/v1/oauth-app?clientId=${encodeURIComponent(clientId)}`);
-			if (res.ok) {
-				appName = (await res.json()).name ?? null;
-			}
-		} catch {
-			// Fall back to the generic label.
-		}
+	try {
+		const app = await Backend.getApp(grant.appId);
+		appName = app.name;
+	} catch {
+		// Fall back to the generic label.
 	}
 
 	return {
 		grantId,
-		clientId,
-		scopes: scope
-			.split(' ')
-			.map((s) => s.trim())
-			.filter(Boolean),
+		scopes: grant.scopes,
 		projectId: APPWRITE_PROJECT_ID,
 		appName
 	};

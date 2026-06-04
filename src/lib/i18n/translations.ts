@@ -246,8 +246,9 @@ export const translations = {
 		'apps.redirectUrisHint': 'One URL per line.',
 		'apps.enabled': 'Enabled',
 		'apps.enabledHint': 'When disabled, the app cannot be used to authorize users.',
-		'apps.internal': 'Internal',
-		'apps.internalHint': 'When enabled, only you can authorize against this app.',
+		'apps.deviceFlow': 'Device flow',
+		'apps.deviceFlowHint':
+			'Allow this app to use the OAuth2 Device Authorization Grant (RFC 8628) for input-constrained devices such as TVs and CLIs.',
 		'apps.edit': 'Edit',
 		'apps.manage': 'Manage',
 		'apps.delete': 'Delete',
@@ -568,8 +569,9 @@ export const translations = {
 		'apps.redirectUrisHint': 'Une URL par ligne.',
 		'apps.enabled': 'Activée',
 		'apps.enabledHint': "Lorsque désactivée, l'application ne peut pas autoriser les utilisateurs.",
-		'apps.internal': 'Interne',
-		'apps.internalHint': 'Lorsque activée, vous seul pouvez autoriser cette application.',
+		'apps.deviceFlow': 'Flux par appareil',
+		'apps.deviceFlowHint':
+			"Autoriser cette application à utiliser l'OAuth2 Device Authorization Grant (RFC 8628) pour les appareils à saisie limitée tels que les téléviseurs et les CLI.",
 		'apps.edit': 'Modifier',
 		'apps.manage': 'Gérer',
 		'apps.delete': 'Supprimer',

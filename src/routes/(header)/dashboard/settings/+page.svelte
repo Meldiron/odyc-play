@@ -18,7 +18,6 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { defaultLocale, languages, locales, type Locale } from '$lib/i18n';
 	import { Badge } from '$lib/components/ui/badge/index.js';
-	import { Switch } from '$lib/components/ui/switch/index.js';
 	import { Textarea } from '$lib/components/ui/textarea/index.js';
 	import { goto } from '$app/navigation';
 	import PlusIcon from '@lucide/svelte/icons/plus';
@@ -34,7 +33,6 @@
 	let appName = $state('');
 	let appType: 'confidential' | 'public' = $state('confidential');
 	let appRedirectUris = $state('');
-	let appInternal = $state(false);
 	let isCreatingApp = $state(false);
 
 	function parseRedirectUris(value: string) {
@@ -48,7 +46,6 @@
 		appName = '';
 		appType = 'confidential';
 		appRedirectUris = '';
-		appInternal = false;
 	}
 
 	async function onCreateApp(event: Event) {
@@ -60,8 +57,7 @@
 				appName,
 				parseRedirectUris(appRedirectUris),
 				appType,
-				true,
-				appInternal
+				true
 			);
 			toast.success(stores.t('apps.created'));
 			showCreateApp = false;
@@ -344,13 +340,6 @@
 						rows={3}
 					/>
 					<p class="text-muted-foreground text-xs">{stores.t('apps.redirectUrisHint')}</p>
-				</div>
-				<div class="flex items-start gap-3">
-					<Switch id="app-internal" bind:checked={appInternal} />
-					<div class="grid gap-1">
-						<Label for="app-internal">{stores.t('apps.internal')}</Label>
-						<p class="text-muted-foreground text-sm">{stores.t('apps.internalHint')}</p>
-					</div>
 				</div>
 			</div>
 

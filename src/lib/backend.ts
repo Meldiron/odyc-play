@@ -319,16 +319,14 @@ export class Backend {
 		name: string,
 		redirectUris: string[],
 		type: 'confidential' | 'public',
-		enabled: boolean,
-		internal: boolean
+		enabled: boolean
 	) {
 		return await this.#apps.create({
 			appId: ID.unique(),
 			name,
 			redirectUris,
 			type,
-			enabled,
-			internal
+			enabled
 		});
 	}
 
@@ -337,7 +335,7 @@ export class Backend {
 		params: {
 			name: string;
 			enabled?: boolean;
-			internal?: boolean;
+			deviceFlow?: boolean;
 			redirectUris?: string[];
 			type?: 'confidential' | 'public';
 		}
@@ -376,6 +374,10 @@ export class Backend {
 			prompt: params.get('prompt') ?? undefined,
 			maxAge: maxAge !== null ? Number(maxAge) : undefined
 		});
+	}
+
+	static async getGrant(grantId: string): Promise<Models.Oauth2Grant> {
+		return await this.#oauth2.getGrant({ projectId: APPWRITE_PROJECT_ID, grantId });
 	}
 
 	static async approve(grantId: string): Promise<Models.Oauth2Approve> {
