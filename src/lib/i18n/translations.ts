@@ -328,6 +328,7 @@ export const translations = {
 		'consent.scope.email': 'Access your email address',
 		'consent.scope.profileRead': 'Read your account information',
 		'consent.scope.profileWrite': 'Update your account information',
+		'consent.scope.gamesCreate': 'Create new games on your behalf',
 		// OAuth2 device flow
 		'device.heading': 'Connect a device',
 		'device.description': 'Enter the 6-digit code shown on your device to continue.',
@@ -673,6 +674,7 @@ export const translations = {
 		'consent.scope.email': 'Accéder à votre adresse e-mail',
 		'consent.scope.profileRead': 'Lire les informations de votre compte',
 		'consent.scope.profileWrite': 'Mettre à jour les informations de votre compte',
+		'consent.scope.gamesCreate': 'Créer de nouveaux jeux en votre nom',
 		// OAuth2 device flow
 		'device.heading': 'Connecter un appareil',
 		'device.description': "Saisissez le code à 6 chiffres affiché sur votre appareil pour continuer.",

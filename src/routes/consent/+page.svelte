@@ -40,7 +40,8 @@
 		profile: 'consent.scope.profile',
 		email: 'consent.scope.email',
 		'profile.read': 'consent.scope.profileRead',
-		'profile.write': 'consent.scope.profileWrite'
+		'profile.write': 'consent.scope.profileWrite',
+		'games.create': 'consent.scope.gamesCreate'
 	};
 
 	function scopeLabel(scope: string) {
