@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { goto } from '$app/navigation';
 	import { stores } from '$lib/stores.svelte';
 	import { Backend } from '$lib/backend';
 	import { Button } from '$lib/components/ui/button/index.js';
@@ -14,13 +15,24 @@
 	async function allow() {
 		submitting = true;
 		const { redirectUrl } = await Backend.approve(data.grantId);
-		window.location.href = redirectUrl;
+		// The device flow (RFC 8628) has no browser redirect target — the device polls
+		// for the token on its own. Send the user to a finish screen instead of
+		// reloading the now-consumed grant, which would 404 as "grant not found".
+		if (redirectUrl) {
+			window.location.href = redirectUrl;
+		} else {
+			await goto('/device-success');
+		}
 	}
 
 	async function deny() {
 		submitting = true;
 		const { redirectUrl } = await Backend.reject(data.grantId);
-		window.location.href = redirectUrl;
+		if (redirectUrl) {
+			window.location.href = redirectUrl;
+		} else {
+			await goto('/');
+		}
 	}
 
 	const SCOPE_LABELS: Record<string, string> = {

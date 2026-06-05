@@ -322,7 +322,11 @@ export const translations = {
 		'device.description': 'Enter the 6-digit code shown on your device to continue.',
 		'device.codeLabel': 'Device code',
 		'device.continue': 'Continue',
-		'device.invalidCode': 'That code is invalid or has expired. Check your device and try again.'
+		'device.invalidCode': 'That code is invalid or has expired. Check your device and try again.',
+		'deviceSuccess.heading': "You're all set",
+		'deviceSuccess.description':
+			'Your device is now connected. Head back to it — it will continue automatically. You can safely close this window.',
+		'deviceSuccess.home': 'Back to home'
 	},
 	fr: {
 		// Overview
@@ -653,6 +657,10 @@ export const translations = {
 		'device.codeLabel': 'Code de l\'appareil',
 		'device.continue': 'Continuer',
 		'device.invalidCode':
-			"Ce code est invalide ou a expiré. Vérifiez votre appareil et réessayez."
+			"Ce code est invalide ou a expiré. Vérifiez votre appareil et réessayez.",
+		'deviceSuccess.heading': 'Tout est prêt',
+		'deviceSuccess.description':
+			"Votre appareil est maintenant connecté. Retournez-y — il continuera automatiquement. Vous pouvez fermer cette fenêtre en toute sécurité.",
+		'deviceSuccess.home': "Retour à l'accueil"
 	}
 } as const;
