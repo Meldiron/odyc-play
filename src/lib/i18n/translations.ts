@@ -329,6 +329,11 @@ export const translations = {
 		'consent.scope.profileRead': 'Read your account information',
 		'consent.scope.profileWrite': 'Update your account information',
 		'consent.scope.gamesCreate': 'Create new games on your behalf',
+		'consent.selectGame': 'Choose which game to grant access to:',
+		'consent.selectGamePlaceholder': 'Select a game',
+		'consent.gamePermissions': 'For this game, it will be allowed to:',
+		'consent.noGames': "You don't have any games yet. Create one first to grant access.",
+		'consent.action.codeWrite': "Edit and publish this game's code",
 		// OAuth2 device flow
 		'device.heading': 'Connect a device',
 		'device.description': 'Enter the 6-digit code shown on your device to continue.',
@@ -675,16 +680,21 @@ export const translations = {
 		'consent.scope.profileRead': 'Lire les informations de votre compte',
 		'consent.scope.profileWrite': 'Mettre à jour les informations de votre compte',
 		'consent.scope.gamesCreate': 'Créer de nouveaux jeux en votre nom',
+		'consent.selectGame': "Choisissez le jeu auquel accorder l'accès :",
+		'consent.selectGamePlaceholder': 'Sélectionner un jeu',
+		'consent.gamePermissions': 'Pour ce jeu, cela lui permettra de :',
+		'consent.noGames': "Vous n'avez encore aucun jeu. Créez-en un d'abord pour accorder l'accès.",
+		'consent.action.codeWrite': 'Modifier et publier le code de ce jeu',
 		// OAuth2 device flow
 		'device.heading': 'Connecter un appareil',
-		'device.description': "Saisissez le code à 6 chiffres affiché sur votre appareil pour continuer.",
-		'device.codeLabel': 'Code de l\'appareil',
+		'device.description':
+			'Saisissez le code à 6 chiffres affiché sur votre appareil pour continuer.',
+		'device.codeLabel': "Code de l'appareil",
 		'device.continue': 'Continuer',
-		'device.invalidCode':
-			"Ce code est invalide ou a expiré. Vérifiez votre appareil et réessayez.",
+		'device.invalidCode': 'Ce code est invalide ou a expiré. Vérifiez votre appareil et réessayez.',
 		'deviceSuccess.heading': 'Tout est prêt',
 		'deviceSuccess.description':
-			"Votre appareil est maintenant connecté. Retournez-y — il continuera automatiquement. Vous pouvez fermer cette fenêtre en toute sécurité.",
+			'Votre appareil est maintenant connecté. Retournez-y — il continuera automatiquement. Vous pouvez fermer cette fenêtre en toute sécurité.',
 		'deviceSuccess.home': "Retour à l'accueil"
 	}
 } as const;

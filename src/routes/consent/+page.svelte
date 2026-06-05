@@ -4,17 +4,48 @@
 	import { Backend } from '$lib/backend';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
+	import * as Select from '$lib/components/ui/select/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
 	import CheckIcon from '@lucide/svelte/icons/check';
 	import type { PageProps } from './$types';
+	import type { AuthorizationDetail } from './+page';
 
 	let { data }: PageProps = $props();
 
 	let submitting = $state(false);
 
+	// The `type: 'game'` details, kept with their original index so we can write
+	// the user's choice back into the right entry when approving.
+	const gameDetails = data.authorizationDetails
+		.map((detail, index) => ({ detail, index }))
+		.filter(({ detail }) => detail.type === 'game');
+
+	// Selected game id per detail index, pre-filled from the requested identifier
+	// (when the client already named a game) and otherwise the first owned game.
+	let selectedGameIds = $state<Record<number, string>>(
+		Object.fromEntries(
+			gameDetails.map(({ detail, index }) => [index, detail.identifier ?? data.games[0]?.$id ?? ''])
+		)
+	);
+
+	function gameName(gameId: string) {
+		return data.games.find((game) => game.$id === gameId)?.name ?? gameId;
+	}
+
+	// Approval is blocked until every game detail is bound to a concrete game, so
+	// we never record a `type: 'game'` entry without an identifier.
+	const allGamesSelected = $derived(
+		gameDetails.every(({ index }) => Boolean(selectedGameIds[index]))
+	);
+
 	async function allow() {
 		submitting = true;
-		const { redirectUrl } = await Backend.approve(data.grantId);
+		// Replace each requested game detail with the concrete game the user picked.
+		const enriched: AuthorizationDetail[] = data.authorizationDetails.map((detail, index) =>
+			detail.type === 'game' ? { ...detail, identifier: selectedGameIds[index] } : detail
+		);
+		const authorizationDetails = enriched.length > 0 ? JSON.stringify(enriched) : undefined;
+		const { redirectUrl } = await Backend.approve(data.grantId, authorizationDetails);
 		// The device flow (RFC 8628) has no browser redirect target — the device polls
 		// for the token on its own. Send the user to a finish screen instead of
 		// reloading the now-consumed grant, which would 404 as "grant not found".
@@ -44,9 +75,19 @@
 		'games.create': 'consent.scope.gamesCreate'
 	};
 
+	// Actions a game detail can request. Only `code.write` exists today.
+	const ACTION_LABELS: Record<string, string> = {
+		'code.write': 'consent.action.codeWrite'
+	};
+
 	function scopeLabel(scope: string) {
 		const key = SCOPE_LABELS[scope];
 		return key ? stores.t(key as Parameters<typeof stores.t>[0]) : scope;
+	}
+
+	function actionLabel(action: string) {
+		const key = ACTION_LABELS[action];
+		return key ? stores.t(key as Parameters<typeof stores.t>[0]) : action;
 	}
 </script>
 
@@ -87,11 +128,45 @@
 						</div>
 					{/if}
 
+					{#each gameDetails as { detail, index } (index)}
+						<div class="flex flex-col gap-3">
+							<p class="text-muted-foreground text-sm">{stores.t('consent.selectGame')}</p>
+							{#if data.games.length > 0}
+								<Select.Root type="single" bind:value={selectedGameIds[index]}>
+									<Select.Trigger class="w-full">
+										{selectedGameIds[index]
+											? gameName(selectedGameIds[index])
+											: stores.t('consent.selectGamePlaceholder')}
+									</Select.Trigger>
+									<Select.Content>
+										{#each data.games as game (game.$id)}
+											<Select.Item value={game.$id} label={game.name} />
+										{/each}
+									</Select.Content>
+								</Select.Root>
+
+								{#if detail.actions && detail.actions.length > 0}
+									<p class="text-muted-foreground text-sm">{stores.t('consent.gamePermissions')}</p>
+									<ul class="flex flex-col gap-2">
+										{#each detail.actions as action (action)}
+											<li class="flex items-start gap-2 text-sm">
+												<CheckIcon class="text-primary mt-0.5 size-4 flex-shrink-0" />
+												<span>{actionLabel(action)}</span>
+											</li>
+										{/each}
+									</ul>
+								{/if}
+							{:else}
+								<p class="text-muted-foreground text-sm">{stores.t('consent.noGames')}</p>
+							{/if}
+						</div>
+					{/each}
+
 					<div class="grid grid-cols-2 gap-4">
 						<Button onclick={deny} disabled={submitting} variant="outline" class="w-full">
 							{stores.t('consent.deny')}
 						</Button>
-						<Button onclick={allow} disabled={submitting} class="w-full">
+						<Button onclick={allow} disabled={submitting || !allGamesSelected} class="w-full">
 							{stores.t('consent.allow')}
 						</Button>
 					</div>

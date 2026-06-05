@@ -388,8 +388,18 @@ export class Backend {
 		return await this.#oauth2.getGrant({ projectId: APPWRITE_PROJECT_ID, grantId });
 	}
 
-	static async approve(grantId: string): Promise<Models.Oauth2Approve> {
-		return await this.#oauth2.approve({ projectId: APPWRITE_PROJECT_ID, grantId });
+	// `authorizationDetails` lets the consent screen record the concrete resources
+	// the user selected (e.g. which game `code.write` applies to), replacing the
+	// details the client originally requested. Omit to keep the requested details.
+	static async approve(
+		grantId: string,
+		authorizationDetails?: string
+	): Promise<Models.Oauth2Approve> {
+		return await this.#oauth2.approve({
+			projectId: APPWRITE_PROJECT_ID,
+			grantId,
+			authorizationDetails
+		});
 	}
 
 	static async reject(grantId: string): Promise<Models.Oauth2Reject> {
