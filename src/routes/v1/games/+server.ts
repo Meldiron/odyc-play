@@ -1,4 +1,4 @@
-import { Client, Databases, Users, ID, AppwriteException } from 'node-appwrite';
+import { Client, Databases, Users, ID, Permission, Role, AppwriteException } from 'node-appwrite';
 import { env } from '$env/dynamic/private';
 import { PUBLIC_ODYC_VERSION } from '$env/static/public';
 import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
@@ -179,15 +179,28 @@ export async function POST({ request }) {
 			collaboratorProfileIds: null
 		};
 
+		// Grant the authorizing user read/update/delete on their own game.
+		const permissions = [
+			Permission.read(Role.user(auth.userId)),
+			Permission.update(Role.user(auth.userId)),
+			Permission.delete(Role.user(auth.userId))
+		];
+
 		let created: Games;
 		try {
-			created = await databases.createDocument<Games>('main', 'games', ID.unique(), game);
+			created = await databases.createDocument<Games>(
+				'main',
+				'games',
+				ID.unique(),
+				game,
+				permissions
+			);
 		} catch (error: unknown) {
 			// Slug collides with an existing game document id: fall back to a unique id.
 			if (error instanceof AppwriteException && error.code === 409) {
 				const id = ID.unique();
 				game.slug = id;
-				created = await databases.createDocument<Games>('main', 'games', id, game);
+				created = await databases.createDocument<Games>('main', 'games', id, game, permissions);
 			} else {
 				throw error;
 			}
