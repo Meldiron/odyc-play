@@ -110,6 +110,14 @@
 
 			<h1 class="font-pixel text-2xl font-medium">Odyc.js</h1>
 		</a>
+		<nav class="flex items-center gap-1">
+			<a href="/dashboard/overview" class={buttonVariants({ variant: 'ghost' })}>
+				{stores.t('nav.home')}
+			</a>
+			<a href="/dashboard/marketplace" class={buttonVariants({ variant: 'ghost' })}>
+				{stores.t('nav.marketplace')}
+			</a>
+		</nav>
 		<div class="flex items-center gap-2 sm:ml-auto">
 			<div id="feedback-popover" data-html2canvas-ignore>
 				<Popover.Root bind:open={isFeedbackOpen}>

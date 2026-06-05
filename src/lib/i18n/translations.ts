@@ -6,8 +6,19 @@ export const translations = {
 		'overview.collaborations': 'Your Collaborations',
 		'overview.noCollaboration': "You have not yet collaborated on someone else's game.",
 
+		// Marketplace
+		'marketplace.title': 'Marketplace',
+		'marketplace.description': 'Discover apps built on Odyc.js.',
+		'marketplace.createApp': 'Create app',
+		'marketplace.visit': 'Visit',
+		'marketplace.empty': 'No apps available yet.',
+		'marketplace.previous': 'Previous',
+		'marketplace.next': 'Next',
+		'marketplace.of': 'of',
+
 		// Navigation
 		'nav.home': 'Home',
+		'nav.marketplace': 'Marketplace',
 		'nav.myProfile': 'My Profile',
 		'nav.settings': 'Settings',
 		'nav.signIn': 'Sign In',
@@ -335,8 +346,19 @@ export const translations = {
 		'overview.collaborations': 'Vos Collaborations',
 		'overview.noCollaboration': "Vous n'avez pas encore collaboré sur le jeu d'une autre personne.",
 
+		// Marketplace
+		'marketplace.title': 'Marketplace',
+		'marketplace.description': 'Découvrez les applications construites sur Odyc.js.',
+		'marketplace.createApp': 'Créer une application',
+		'marketplace.visit': 'Visiter',
+		'marketplace.empty': 'Aucune application disponible pour le moment.',
+		'marketplace.previous': 'Précédent',
+		'marketplace.next': 'Suivant',
+		'marketplace.of': 'sur',
+
 		// Navigation
 		'nav.home': 'Accueil',
+		'nav.marketplace': 'Marketplace',
 		'nav.myProfile': 'Mon Profil',
 		'nav.settings': 'Réglages',
 		'nav.signIn': 'Se connecter',

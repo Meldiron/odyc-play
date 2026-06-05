@@ -311,6 +311,10 @@ export class Backend {
 		return await this.#apps.list({ queries: [Query.equal('userId', userId)] });
 	}
 
+	static async listAllApps(queries: string[] = []) {
+		return await this.#apps.list({ queries });
+	}
+
 	static async getApp(appId: string) {
 		return await this.#apps.get({ appId });
 	}
