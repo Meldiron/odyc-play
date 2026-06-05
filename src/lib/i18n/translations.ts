@@ -319,7 +319,7 @@ export const translations = {
 		'consent.scope.profileWrite': 'Update your account information',
 		// OAuth2 device flow
 		'device.heading': 'Connect a device',
-		'device.description': 'Enter the code shown on your device to continue.',
+		'device.description': 'Enter the 6-digit code shown on your device to continue.',
 		'device.codeLabel': 'Device code',
 		'device.continue': 'Continue',
 		'device.invalidCode': 'That code is invalid or has expired. Check your device and try again.'
@@ -649,7 +649,7 @@ export const translations = {
 		'consent.scope.profileWrite': 'Mettre à jour les informations de votre compte',
 		// OAuth2 device flow
 		'device.heading': 'Connecter un appareil',
-		'device.description': "Saisissez le code affiché sur votre appareil pour continuer.",
+		'device.description': "Saisissez le code à 6 chiffres affiché sur votre appareil pour continuer.",
 		'device.codeLabel': 'Code de l\'appareil',
 		'device.continue': 'Continuer',
 		'device.invalidCode':

@@ -18,7 +18,9 @@ export const load: PageLoad = async ({ url }) => {
 
 	// RFC 8628 verification_uri_complete carries the code as `user_code`. Pre-fill
 	// it, but the user must still submit explicitly (§3.3.1) — never auto-submit.
-	return {
-		userCode: url.searchParams.get('user_code') ?? ''
-	};
+	// The code is always 6 digits, so strip any formatting (e.g. the display hyphen)
+	// and keep only digits.
+	const userCode = (url.searchParams.get('user_code') ?? '').replace(/\D/g, '').slice(0, 6);
+
+	return { userCode };
 };
