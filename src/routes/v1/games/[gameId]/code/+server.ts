@@ -91,11 +91,14 @@ async function authorizeGameAction(
 		};
 	}
 
+	// A token may carry several `type: 'game'` entries (the consent screen emits
+	// one per selected game), so any matching entry grants access. An entry whose
+	// identifier is the wildcard "*" covers every game the user owns.
 	const details = result.authorization_details ?? [];
 	const granted = details.some(
 		(detail) =>
 			detail.type === 'game' &&
-			detail.identifier === gameId &&
+			(detail.identifier === gameId || detail.identifier === '*') &&
 			Array.isArray(detail.actions) &&
 			detail.actions.includes(action)
 	);
