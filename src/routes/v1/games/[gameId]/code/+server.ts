@@ -1,4 +1,4 @@
-import { Client, Databases } from 'node-appwrite';
+import { Client, Databases, Users } from 'node-appwrite';
 import { env } from '$env/dynamic/private';
 import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
 import { json } from '@sveltejs/kit';
@@ -92,18 +92,31 @@ async function authorizeGameAction(
 	}
 
 	// A token may carry several `type: 'game'` entries (the consent screen emits
-	// one per selected game), so any matching entry grants access. An entry whose
-	// identifier is the wildcard "*" covers every game the user owns.
+	// one per selected game), so any matching entry that grants the action is
+	// enough. We distinguish exact grants from the "*" wildcard ("all games"):
+	// exact grants were bound to a game the user owns at consent time, but the
+	// wildcard matches whatever id is in the URL, so it must be backed by an
+	// ownership check before we trust it — otherwise it would let a token edit
+	// games belonging to other users.
 	const details = result.authorization_details ?? [];
-	const granted = details.some(
+	const actionable = details.filter(
 		(detail) =>
-			detail.type === 'game' &&
-			(detail.identifier === gameId || detail.identifier === '*') &&
-			Array.isArray(detail.actions) &&
-			detail.actions.includes(action)
+			detail.type === 'game' && Array.isArray(detail.actions) && detail.actions.includes(action)
 	);
 
-	if (!granted) {
+	const grantedExact = actionable.some((detail) => detail.identifier === gameId);
+	const grantedWildcard = actionable.some((detail) => detail.identifier === '*');
+
+	if (!grantedExact && !grantedWildcard) {
+		return {
+			error: json(
+				{ message: `Access token does not grant "${action}" on this game.` },
+				{ status: 403, headers: CORS }
+			)
+		};
+	}
+
+	if (!grantedExact && grantedWildcard && !(await userOwnsGame(result.sub, gameId))) {
 		return {
 			error: json(
 				{ message: `Access token does not grant "${action}" on this game.` },
@@ -113,6 +126,26 @@ async function authorizeGameAction(
 	}
 
 	return { userId: result.sub };
+}
+
+// Confirms the user owns the target game, for the wildcard ("*") grant. The
+// wildcard means "all games the user owns", which the consent picker enforces
+// by only listing owned games; this re-checks it server-side since the token
+// itself carries no concrete game id. Returns false on any missing link
+// (no profile, missing game) so access fails closed.
+async function userOwnsGame(userId: string, gameId: string): Promise<boolean> {
+	try {
+		const users = new Users(serverClient());
+		const prefs = await users.getPrefs<{ profileId?: string }>(userId);
+		const profileId = prefs.profileId;
+		if (!profileId) return false;
+
+		const databases = new Databases(serverClient());
+		const game = await databases.getDocument<Games>('main', 'games', gameId);
+		return game.ownerProfileId === profileId;
+	} catch {
+		return false;
+	}
 }
 
 export function OPTIONS() {
