@@ -60,6 +60,7 @@
 		if (selectedIds.has(game.$id)) return;
 		selected = [...selected, { id: game.$id, name: game.name }];
 		search = '';
+		comboOpen = false;
 	}
 
 	function removeGame(id: string) {
