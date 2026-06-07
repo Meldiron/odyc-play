@@ -13,6 +13,12 @@
 	import GameCardsStateful from './game-cards-stateful.svelte';
 	import Button from './ui/button/button.svelte';
 	import { stores } from '$lib/stores.svelte';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
+	import CreateGameCliDialog from './create-game-cli-dialog.svelte';
+	import IconWorldWww from '@tabler/icons-svelte/icons/world-www';
+	import IconTerminal2 from '@tabler/icons-svelte/icons/terminal-2';
+	import IconChevronDown from '@tabler/icons-svelte/icons/chevron-down';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 
 	const isDesktop = new MediaQuery('(min-width: 768px)');
 
@@ -35,6 +41,7 @@
 	let games = $derived(props.games);
 
 	let isLoading = $state(false);
+	let isCliDialogOpen = $state(false);
 
 	async function onPageChange(page: number) {
 		games = await Backend.listGames([...props.queries, Query.offset(perPage * (page - 1))]);
@@ -59,12 +66,47 @@
 		<h1 class="font-title flex-shrink-0 text-3xl">{props.title ?? 'Unnamed Category'}</h1>
 
 		{#if props.allowCreate}
-			<Button type="button" disabled={isLoading} onclick={createGame}>
-				{#if isLoading}
-					<Loader2Icon class="animate-spin" />
-				{/if}
-				{stores.t('games.create')}</Button
-			>
+			<DropdownMenu.Root>
+				<DropdownMenu.Trigger disabled={isLoading}>
+					{#snippet child({ props: triggerProps })}
+						<Button type="button" disabled={isLoading} {...triggerProps}>
+							{#if isLoading}
+								<Loader2Icon class="animate-spin" />
+							{/if}
+							{stores.t('games.create')}
+							<IconChevronDown class="size-4 opacity-70" />
+						</Button>
+					{/snippet}
+				</DropdownMenu.Trigger>
+				<DropdownMenu.Content class="w-72" align="end">
+					<DropdownMenu.Item class="items-start gap-3 py-2.5" onclick={createGame}>
+						<IconWorldWww class="text-muted-foreground mt-0.5 size-5 flex-shrink-0" />
+						<div class="flex flex-col gap-0.5">
+							<span class="flex items-center gap-2 font-medium">
+								{stores.t('games.createWebEditor')}
+								<Badge variant="secondary" class="px-1.5 py-0 text-[10px] font-normal">
+									{stores.t('games.createWebEditorBadge')}
+								</Badge>
+							</span>
+							<span class="text-muted-foreground text-xs leading-snug">
+								{stores.t('games.createWebEditorDescription')}
+							</span>
+						</div>
+					</DropdownMenu.Item>
+					<DropdownMenu.Item
+						class="items-start gap-3 py-2.5"
+						onclick={() => (isCliDialogOpen = true)}
+					>
+						<IconTerminal2 class="text-muted-foreground mt-0.5 size-5 flex-shrink-0" />
+						<div class="flex flex-col gap-0.5">
+							<span class="font-medium">{stores.t('games.createCli')}</span>
+							<span class="text-muted-foreground text-xs leading-snug">
+								{stores.t('games.createCliDescription')}
+							</span>
+						</div>
+					</DropdownMenu.Item>
+				</DropdownMenu.Content>
+			</DropdownMenu.Root>
 		{/if}
 	</div>
 	<div class="flex flex-col gap-4 md:gap-6">
@@ -116,3 +158,5 @@
 		</Pagination.Root>
 	{/if}
 </div>
+
+<CreateGameCliDialog bind:open={isCliDialogOpen} />
