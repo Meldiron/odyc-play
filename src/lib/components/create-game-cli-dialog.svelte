@@ -13,51 +13,48 @@
 	type Step = {
 		titleKey: Parameters<typeof stores.t>[0];
 		descriptionKey: Parameters<typeof stores.t>[0];
-		command: string;
+		commands: string[];
 	};
 
 	const steps: Step[] = [
 		{
 			titleKey: 'cli.step1Title',
 			descriptionKey: 'cli.step1Description',
-			command: 'go install github.com/meldiron/odyc-cli@latest'
+			commands: ['go install github.com/meldiron/odyc-cli@latest', 'odyc-cli login']
 		},
 		{
 			titleKey: 'cli.step2Title',
 			descriptionKey: 'cli.step2Description',
-			command: 'odyc-cli login'
+			commands: ['odyc-cli create my-game']
 		},
 		{
 			titleKey: 'cli.step3Title',
 			descriptionKey: 'cli.step3Description',
-			command: 'odyc-cli create my-game'
+			commands: ['cd my-game', 'open index.html']
 		},
 		{
 			titleKey: 'cli.step4Title',
 			descriptionKey: 'cli.step4Description',
-			command: 'cd my-game && odyc-cli deploy'
+			commands: ['odyc-cli deploy']
 		}
 	];
 
-	let copiedIndex = $state<number | null>(null);
+	let copiedKey = $state<string | null>(null);
 	let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-	function copy(command: string, index: number) {
+	function copy(command: string, key: string) {
 		navigator.clipboard.writeText(command);
-		copiedIndex = index;
+		copiedKey = key;
 		if (timeoutId) clearTimeout(timeoutId);
 		timeoutId = setTimeout(() => {
-			copiedIndex = null;
+			copiedKey = null;
 			timeoutId = undefined;
 		}, 1200);
 	}
 </script>
 
 <Dialog.Root bind:open>
-	<Dialog.Content
-		class="max-h-[90dvh] gap-0 overflow-y-auto p-0 sm:max-w-xl"
-		data-cli-dialog
-	>
+	<Dialog.Content class="gap-0 p-0 sm:max-w-xl" data-cli-dialog>
 		<!-- Header -->
 		<div class="flex items-start gap-4 border-b p-6">
 			<div
@@ -77,7 +74,7 @@
 
 		<!-- Steps timeline -->
 		<ol class="relative flex flex-col gap-6 p-6">
-			{#each steps as step, i (step.command)}
+			{#each steps as step, i (step.titleKey)}
 				<li class="relative flex gap-4">
 					<!-- Connector line + number -->
 					<div class="flex flex-col items-center">
@@ -99,24 +96,29 @@
 						</p>
 
 						<!-- Terminal command block -->
-						<div
-							class="bg-foreground text-background mt-2.5 flex items-center gap-2 rounded-md py-2 pr-2 pl-3 font-mono text-xs"
-						>
-							<span class="text-background/40 select-none">$</span>
-							<code class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">{step.command}</code>
-							<button
-								type="button"
-								onclick={() => copy(step.command, i)}
-								title={copiedIndex === i ? stores.t('cli.copied') : stores.t('cli.copy')}
-								aria-label={stores.t('cli.copy')}
-								class="text-background/60 hover:bg-background/10 hover:text-background flex size-7 flex-shrink-0 items-center justify-center rounded transition-colors"
-							>
-								{#if copiedIndex === i}
-									<IconCheck class="size-4" />
-								{:else}
-									<IconClipboard class="size-4" />
-								{/if}
-							</button>
+						<div class="bg-foreground text-background mt-2.5 flex flex-col rounded-md font-mono text-xs">
+							{#each step.commands as command, j (command)}
+								{@const key = `${i}-${j}`}
+								<div
+									class="border-background/10 flex items-center gap-2 py-2 pr-2 pl-3 not-first:border-t"
+								>
+									<span class="text-background/40 select-none">$</span>
+									<code class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">{command}</code>
+									<button
+										type="button"
+										onclick={() => copy(command, key)}
+										title={copiedKey === key ? stores.t('cli.copied') : stores.t('cli.copy')}
+										aria-label={stores.t('cli.copy')}
+										class="text-background/60 hover:bg-background/10 hover:text-background flex size-7 flex-shrink-0 items-center justify-center rounded transition-colors"
+									>
+										{#if copiedKey === key}
+											<IconCheck class="size-4" />
+										{:else}
+											<IconClipboard class="size-4" />
+										{/if}
+									</button>
+								</div>
+							{/each}
 						</div>
 					</div>
 				</li>

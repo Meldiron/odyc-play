@@ -90,12 +90,14 @@ export const translations = {
 		'cli.title': 'Create a game with the CLI',
 		'cli.subtitle':
 			'Prefer your own editor? Use the Odyc CLI to scaffold and deploy games straight from your terminal.',
-		'cli.step1Title': 'Install the CLI',
-		'cli.step1Description': 'Requires Go 1.24 or higher.',
-		'cli.step2Title': 'Log in',
-		'cli.step2Description': 'Opens your browser to authenticate with your Odyc account.',
-		'cli.step3Title': 'Create a game',
-		'cli.step3Description': 'Scaffolds a starter project and links it to your account.',
+		'cli.step1Title': 'Install & log in',
+		'cli.step1Description':
+			'Requires Go 1.24 or higher. The login command opens your browser to authenticate with your Odyc account.',
+		'cli.step2Title': 'Create a game',
+		'cli.step2Description': 'Scaffolds a starter project and links it to your account.',
+		'cli.step3Title': 'Develop locally',
+		'cli.step3Description':
+			'Enter the folder and open index.html in your browser to play and iterate — no build step needed.',
 		'cli.step4Title': 'Deploy',
 		'cli.step4Description': 'Bundles your game and publishes it, then prints a shareable URL.',
 		'cli.docsLink': 'View full documentation',
@@ -462,12 +464,14 @@ export const translations = {
 		'cli.title': 'Créer un jeu avec la CLI',
 		'cli.subtitle':
 			'Vous préférez votre propre éditeur ? Utilisez la CLI Odyc pour générer et déployer des jeux directement depuis votre terminal.',
-		'cli.step1Title': 'Installer la CLI',
-		'cli.step1Description': 'Nécessite Go 1.24 ou une version supérieure.',
-		'cli.step2Title': 'Se connecter',
-		'cli.step2Description': 'Ouvre votre navigateur pour vous authentifier avec votre compte Odyc.',
-		'cli.step3Title': 'Créer un jeu',
-		'cli.step3Description': 'Génère un projet de départ et le lie à votre compte.',
+		'cli.step1Title': 'Installer et se connecter',
+		'cli.step1Description':
+			'Nécessite Go 1.24 ou une version supérieure. La commande de connexion ouvre votre navigateur pour vous authentifier avec votre compte Odyc.',
+		'cli.step2Title': 'Créer un jeu',
+		'cli.step2Description': 'Génère un projet de départ et le lie à votre compte.',
+		'cli.step3Title': 'Développer en local',
+		'cli.step3Description':
+			'Entrez dans le dossier et ouvrez index.html dans votre navigateur pour jouer et itérer — aucune étape de build nécessaire.',
 		'cli.step4Title': 'Déployer',
 		'cli.step4Description': 'Regroupe votre jeu et le publie, puis affiche un lien partageable.',
 		'cli.docsLink': 'Voir la documentation complète',
