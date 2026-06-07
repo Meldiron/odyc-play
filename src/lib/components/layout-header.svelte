@@ -114,7 +114,7 @@
 			<a href="/dashboard/overview" class={buttonVariants({ variant: 'ghost' })}>
 				{stores.t('nav.home')}
 			</a>
-			<a href="/dashboard/marketplace" class={buttonVariants({ variant: 'ghost' })}>
+			<a href="/dashboard/apps" class={buttonVariants({ variant: 'ghost' })}>
 				{stores.t('nav.marketplace')}
 			</a>
 		</nav>

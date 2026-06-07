@@ -20,7 +20,7 @@
 	const hasNext = $derived(data.offset + data.limit < total);
 
 	function goToOffset(offset: number) {
-		goto(`/dashboard/marketplace?limit=${data.limit}&offset=${Math.max(0, offset)}`);
+		goto(`/dashboard/apps?limit=${data.limit}&offset=${Math.max(0, offset)}`);
 	}
 </script>
 
