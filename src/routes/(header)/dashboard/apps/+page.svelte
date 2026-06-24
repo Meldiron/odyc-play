@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { goto } from '$app/navigation';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { stores } from '$lib/stores.svelte';
-	import PlusIcon from '@lucide/svelte/icons/plus';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
+	import PlusIcon from '@lucide/svelte/icons/plus';
 	import StoreIcon from '@lucide/svelte/icons/store';
 	import type { PageProps } from './$types';
 
@@ -50,21 +52,73 @@
 	{:else}
 		<div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
 			{#each apps as app (app.$id)}
-				<Card.Root class="flex flex-col">
-					<Card.Header>
-						<Card.Title class="truncate">{app.name}</Card.Title>
-					</Card.Header>
-					<Card.Footer class="mt-auto">
-						<Button
-							variant="outline"
-							size="sm"
-							href="https://google.com"
-							target="_blank"
-							rel="noopener noreferrer"
-						>
-							<ExternalLinkIcon class="size-4" />
-							{stores.t('marketplace.visit')}
+				<Card.Root
+					class="group hover:border-primary/40 flex h-full flex-col overflow-hidden pt-0 transition-all hover:shadow-md"
+				>
+					<a
+						href="/dashboard/apps/{app.$id}"
+						class="focus-visible:ring-ring/50 block focus-visible:ring-2 focus-visible:outline-none"
+					>
+						{#if app.images?.length}
+							<div class="bg-muted aspect-video w-full overflow-hidden">
+								<img
+									src={app.images[0]}
+									alt=""
+									loading="lazy"
+									class="size-full object-cover transition-transform duration-300 group-hover:scale-105"
+								/>
+							</div>
+						{/if}
+						<Card.Header class="pt-6">
+							<div class="flex gap-3 {app.tagline ? 'items-center' : 'items-start'}">
+								<Avatar.Root class="size-11 flex-shrink-0 rounded-xl border">
+									<Avatar.Image src={app.logoUri} alt="" class="object-cover" />
+									<Avatar.Fallback class="rounded-xl text-base font-medium">
+										{app.name.charAt(0).toUpperCase()}
+									</Avatar.Fallback>
+								</Avatar.Root>
+								<div class="min-w-0 {app.tagline ? '' : 'mt-1'}">
+									<Card.Title class="group-hover:text-primary truncate transition-colors">
+										{app.name}
+									</Card.Title>
+									{#if app.tagline}
+										<p class="text-muted-foreground line-clamp-2 text-sm">{app.tagline}</p>
+									{/if}
+								</div>
+							</div>
+						</Card.Header>
+					</a>
+					<Card.Content class="flex-1">
+						{#if app.description}
+							<p class="text-muted-foreground line-clamp-3 text-sm">{app.description}</p>
+						{/if}
+						{#if app.tags?.length}
+							<div class="mt-3 flex flex-wrap gap-1.5">
+								{#each app.tags.slice(0, 3) as tag (tag)}
+									<Badge variant="secondary">{tag}</Badge>
+								{/each}
+								{#if app.tags.length > 3}
+									<Badge variant="outline">+{app.tags.length - 3}</Badge>
+								{/if}
+							</div>
+						{/if}
+					</Card.Content>
+					<Card.Footer class="mt-auto flex gap-2">
+						<Button variant="outline" size="sm" href="/dashboard/apps/{app.$id}" class="flex-1">
+							{stores.t('marketplace.viewDetails')}
 						</Button>
+						{#if app.clientUri}
+							<Button
+								size="sm"
+								href={app.clientUri}
+								target="_blank"
+								rel="noopener noreferrer"
+								class="flex-1"
+							>
+								<ExternalLinkIcon class="size-4" />
+								{stores.t('marketplace.openApp')}
+							</Button>
+						{/if}
 					</Card.Footer>
 				</Card.Root>
 			{/each}

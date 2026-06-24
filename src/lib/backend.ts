@@ -342,6 +342,18 @@ export class Backend {
 			deviceFlow?: boolean;
 			redirectUris?: string[];
 			type?: 'confidential' | 'public';
+			// Marketplace / OAuth2 consent metadata
+			description?: string;
+			tagline?: string;
+			clientUri?: string;
+			logoUri?: string;
+			supportUrl?: string;
+			privacyPolicyUrl?: string;
+			termsUrl?: string;
+			dataDeletionUrl?: string;
+			contacts?: string[];
+			tags?: string[];
+			images?: string[];
 		}
 	) {
 		return await this.#apps.update({ appId, ...params });
@@ -363,10 +375,31 @@ export class Backend {
 		return await this.#apps.deleteTokens({ appId });
 	}
 
+	// App marketplace assets (logo + screenshots)
+	static async uploadAppLogo(file: File) {
+		const uploaded = await this.#storage.createFile('app-logos', ID.unique(), file);
+		return this.#storage.getFileView('app-logos', uploaded.$id).toString();
+	}
+
+	static async uploadAppScreenshot(file: File) {
+		const uploaded = await this.#storage.createFile('app-screenshots', ID.unique(), file);
+		return this.#storage.getFileView('app-screenshots', uploaded.$id).toString();
+	}
+
+	// Best-effort deletion of an uploaded asset, given the stored view URL.
+	static async deleteAppAsset(bucket: 'app-logos' | 'app-screenshots', url: string) {
+		const match = url.match(new RegExp(`/buckets/${bucket}/files/([^/]+)/`));
+		if (!match) return;
+		try {
+			await this.#storage.deleteFile(bucket, match[1]);
+		} catch {
+			// File may already be gone or referenced elsewhere — ignore.
+		}
+	}
+
 	static async authorize(params: URLSearchParams): Promise<Models.Oauth2Authorize> {
 		const maxAge = params.get('max_age');
 		return await this.#oauth2.authorize({
-			projectId: APPWRITE_PROJECT_ID,
 			clientId: params.get('client_id') ?? '',
 			redirectUri: params.get('redirect_uri') ?? '',
 			responseType: params.get('response_type') ?? '',
@@ -376,7 +409,11 @@ export class Backend {
 			codeChallenge: params.get('code_challenge') ?? undefined,
 			codeChallengeMethod: params.get('code_challenge_method') ?? undefined,
 			prompt: params.get('prompt') ?? undefined,
-			maxAge: maxAge !== null ? Number(maxAge) : undefined
+			maxAge: maxAge !== null ? Number(maxAge) : undefined,
+			// RFC 9396 Rich Authorization Requests. Forwarded so flows that ask for
+			// fine-grained resource access (e.g. the MCP server's `code.write` on
+			// selected games) reach the consent screen's game picker.
+			authorizationDetails: params.get('authorization_details') ?? undefined
 		});
 	}
 
@@ -396,13 +433,12 @@ export class Backend {
 		authorizationDetails?: string
 	): Promise<Models.Oauth2Approve> {
 		return await this.#oauth2.approve({
-			projectId: APPWRITE_PROJECT_ID,
 			grantId,
 			authorizationDetails
 		});
 	}
 
 	static async reject(grantId: string): Promise<Models.Oauth2Reject> {
-		return await this.#oauth2.reject({ projectId: APPWRITE_PROJECT_ID, grantId });
+		return await this.#oauth2.reject({ grantId });
 	}
 }

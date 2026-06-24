@@ -71,7 +71,9 @@
 		email: 'consent.scope.email',
 		'profile.read': 'consent.scope.profileRead',
 		'profile.write': 'consent.scope.profileWrite',
-		'games.create': 'consent.scope.gamesCreate'
+		'games.read': 'consent.scope.gamesRead',
+		'games.create': 'consent.scope.gamesCreate',
+		'games.write': 'consent.scope.gamesWrite'
 	};
 
 	// Actions a game detail can request. Only `code.write` exists today.
