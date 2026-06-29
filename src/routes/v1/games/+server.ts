@@ -6,6 +6,7 @@ import { json } from '@sveltejs/kit';
 import slugify from 'slugify';
 import friendlyWords from 'friendly-words';
 import type { Games } from '$lib/appwrite';
+import { tokenGrantId } from '$lib/server/oauth';
 
 // Public, OAuth2-protected API for creating games on behalf of the authorizing
 // user. Access tokens are validated against the OAuth2 introspection endpoint
@@ -26,6 +27,8 @@ type Introspection = {
 	scope?: string;
 	sub?: string;
 	client_id?: string;
+	grant_id?: string;
+	jti?: string;
 };
 
 function serverClient() {
@@ -59,7 +62,7 @@ async function introspect(token: string): Promise<Introspection | null> {
 async function authorize(
 	request: Request,
 	requiredScope: string
-): Promise<{ userId: string } | { error: Response }> {
+): Promise<{ userId: string; grantId: string | null } | { error: Response }> {
 	const header = request.headers.get('authorization') ?? '';
 	const match = header.match(/^Bearer\s+(.+)$/i);
 	if (!match) {
@@ -94,7 +97,7 @@ async function authorize(
 		};
 	}
 
-	return { userId: result.sub };
+	return { userId: result.sub, grantId: tokenGrantId(result) };
 }
 
 // Resolves the user's active profile document id (stored in their prefs).
@@ -176,7 +179,12 @@ export async function POST({ request }) {
 			version: PUBLIC_ODYC_VERSION ?? 'latest',
 			description: null,
 			howToPlay: null,
-			collaboratorProfileIds: null
+			collaboratorProfileIds: null,
+			// Record the OAuth2 grant that created this game, so this one
+			// authorization can later edit its code without an explicit per-game
+			// grant. Other tokens the same user grants this app get a different
+			// grant id and so do not inherit that access.
+			creatorGrantId: auth.grantId
 		};
 
 		// Grant the authorizing user read/update/delete on their own game.

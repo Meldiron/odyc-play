@@ -251,6 +251,9 @@ export class Backend {
 		obj.ownerProfileId = stores.profile?.$id;
 		obj.slug = ID.unique();
 		obj.name = obj.name + ' (Clone)';
+		// A clone is a fresh web-app creation, not made through the OAuth2 API, so
+		// it must not inherit the source game's OAuth2 creator grant.
+		obj.creatorGrantId = null;
 
 		return await this.#databases.createDocument<Games>('main', 'games', obj.slug, obj);
 	}
@@ -265,7 +268,10 @@ export class Backend {
 			version: PUBLIC_ODYC_VERSION ?? 'latest',
 			description: null,
 			howToPlay: null,
-			collaboratorProfileIds: null
+			collaboratorProfileIds: null,
+			// Web-app creation isn't through the OAuth2 API, so there's no OAuth2
+			// creator grant to record.
+			creatorGrantId: null
 		};
 		try {
 			return await this.#databases.createDocument<Games>('main', 'games', ID.unique(), game);

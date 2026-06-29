@@ -19,6 +19,13 @@ export type Introspection = {
 	scope?: string;
 	sub?: string;
 	client_id?: string;
+	// Per-authorization identifier(s). `sub` is the user and `client_id` the app —
+	// both shared across every token the user grants this app — so neither can
+	// scope access to a single authorization. `grant_id` (preferred) and the
+	// RFC 7662 `jti` token id are distinct per grant/token, so we key per-grant
+	// "creator can re-edit what it made" access on these instead of on `sub`.
+	grant_id?: string;
+	jti?: string;
 	authorization_details?: AuthorizationDetail[];
 };
 
@@ -58,4 +65,22 @@ export async function getProfileId(userId: string): Promise<string | null> {
 // The space-separated scopes a token carries, as a Set for membership checks.
 export function tokenScopes(result: Introspection): Set<string> {
 	return new Set((result.scope ?? '').split(' ').filter(Boolean));
+}
+
+// A stable per-authorization identifier for the token, used to scope the
+// "creator can re-edit what it made" implicit grant to the specific
+// authorization rather than to the whole user account. Prefers the grant id
+// (survives access-token refresh within the same authorization) and falls back
+// to the RFC 7662 token id. Returns null when neither is present, so callers
+// MUST fail closed: a game whose stored creator id is null, or a caller with no
+// id, gets no implicit access and must carry an explicit code.write grant.
+export function tokenGrantId(result: Introspection): string | null {
+	return result.grant_id ?? result.jti ?? null;
+}
+
+// True only when both sides carry a concrete id and they match — never when
+// either is missing/null, so an introspection response without a per-grant
+// claim can never re-open per-user access.
+export function isSameGrant(creatorGrantId: string | null, callerGrantId: string | null): boolean {
+	return !!creatorGrantId && !!callerGrantId && creatorGrantId === callerGrantId;
 }

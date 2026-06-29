@@ -278,6 +278,19 @@
                     "size": 32,
                     "default": null,
                     "encrypt": false
+                },
+                {
+                    "key": "creatorGrantId",
+                    "type": "string",
+                    "status": "available",
+                    "error": "",
+                    "required": false,
+                    "array": false,
+                    "$createdAt": "2026-05-30T22:05:01.561+00:00",
+                    "$updatedAt": "2026-05-30T22:05:01.561+00:00",
+                    "size": 256,
+                    "default": null,
+                    "encrypt": false
                 }
             ],
             "indexes": [
@@ -587,6 +600,15 @@
                     "required": true,
                     "array": false,
                     "size": 32,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "creatorGrantId",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 256,
                     "default": null,
                     "encrypt": false
                 }

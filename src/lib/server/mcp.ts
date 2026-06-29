@@ -3,7 +3,7 @@ import { PUBLIC_ODYC_VERSION } from '$env/static/public';
 import slugify from 'slugify';
 import friendlyWords from 'friendly-words';
 import type { Games } from '$lib/appwrite';
-import { serverClient, getProfileId, type AuthorizationDetail } from '$lib/server/oauth';
+import { serverClient, getProfileId, isSameGrant, type AuthorizationDetail } from '$lib/server/oauth';
 
 // Model Context Protocol server for Odyc Play. Implements the JSON-RPC methods a
 // host (Claude, Cursor, …) needs to discover and call tools over the Streamable
@@ -48,6 +48,11 @@ export type JsonRpcResponse = {
 // What the transport knows about the caller after introspecting the token.
 export type McpContext = {
 	userId: string;
+	// The token's OAuth2 grant id (or null if the token carries no per-grant
+	// claim). Used to recognise the authorization that created a game, so only
+	// that grant — not every token the user issues this app — keeps implicit
+	// edit access. Null fails closed.
+	grantId: string | null;
 	scopes: Set<string>;
 	// RFC 9396 grants carried by the token (e.g. `code.write` on chosen games).
 	authorizationDetails: AuthorizationDetail[];
@@ -274,7 +279,12 @@ async function toolCreateGame(args: Record<string, unknown>, ctx: McpContext) {
 		version: PUBLIC_ODYC_VERSION ?? 'latest',
 		description: null,
 		howToPlay: null,
-		collaboratorProfileIds: null
+		collaboratorProfileIds: null,
+		// Record the OAuth2 grant that created this game, so this one authorization
+		// can later edit its code without an explicit per-game code.write grant.
+		// Other tokens the same user grants this app get a different grant id and so
+		// do not inherit that access.
+		creatorGrantId: ctx.grantId
 	};
 
 	// Grant the authorizing user read/update/delete on their own game.
@@ -326,15 +336,22 @@ async function toolUpdateGameCode(args: Record<string, unknown>, ctx: McpContext
 		throw new ToolError(`"code" must be a string up to ${CODE_MAX_LENGTH} chars.`);
 	}
 
-	const { exact, wildcard } = codeWriteGrant(ctx.authorizationDetails, args.gameId);
-	if (!exact && !wildcard) {
-		throw new ToolError(
-			'The access token does not authorize editing this game. Re-authorize and grant code access to it (or to all games).'
-		);
-	}
-
 	const profileId = await requireProfileId(ctx.userId);
 	const existing = await loadAccessibleGame(args.gameId, profileId);
+
+	// The OAuth2 grant that created the game through this API is implicitly
+	// granted every RFC 9396 action on what it made, so that one authorization can
+	// keep editing the game without re-consenting per game. Any other caller —
+	// including a different token from the same user — must carry an explicit
+	// `code.write` grant for this game (exact, or the trusted `*` wildcard).
+	if (!isSameGrant(existing.creatorGrantId, ctx.grantId)) {
+		const { exact, wildcard } = codeWriteGrant(ctx.authorizationDetails, args.gameId);
+		if (!exact && !wildcard) {
+			throw new ToolError(
+				'The access token does not authorize editing this game. Re-authorize and grant code access to it (or to all games).'
+			);
+		}
+	}
 
 	// code.write is owner-only; collaborators can read via get_game but not deploy.
 	// This also backs the `*` wildcard grant, which is only trusted once we've

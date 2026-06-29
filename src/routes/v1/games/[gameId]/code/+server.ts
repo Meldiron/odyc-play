@@ -3,6 +3,7 @@ import { env } from '$env/dynamic/private';
 import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
 import { json } from '@sveltejs/kit';
 import type { Games } from '$lib/appwrite';
+import { tokenGrantId, isSameGrant } from '$lib/server/oauth';
 
 // Public, OAuth2-protected API for updating a game's code. Unlike the other
 // endpoints, authorization here is fine-grained per game via RFC 9396 Rich
@@ -30,6 +31,8 @@ type Introspection = {
 	scope?: string;
 	sub?: string;
 	client_id?: string;
+	grant_id?: string;
+	jti?: string;
 	authorization_details?: AuthorizationDetail[];
 };
 
@@ -91,12 +94,24 @@ async function authorizeGameAction(
 		};
 	}
 
-	// A token may carry several `type: 'game'` entries (the consent screen emits
-	// one per selected game), so any matching entry that grants the action is
-	// enough. We distinguish exact grants from the "*" wildcard ("all games"):
-	// exact grants were bound to a game the user owns at consent time, but the
-	// wildcard matches whatever id is in the URL, so it must be backed by an
-	// ownership check before we trust it — otherwise it would let a token edit
+	const game = await loadGame(gameId);
+
+	// The OAuth2 grant that created the game through this API is implicitly
+	// granted every action on what it made, without an explicit grant chosen at
+	// consent time — so that one authorization can always come back and manage its
+	// game. Scoped to the grant (fails closed when either id is absent), so other
+	// tokens the same user grants this app do not inherit the access.
+	if (game && isSameGrant(game.creatorGrantId, tokenGrantId(result))) {
+		return { userId: result.sub };
+	}
+
+	// Otherwise the action must be authorized by an RFC 9396 grant the token
+	// carries. A token may carry several `type: 'game'` entries (the consent
+	// screen emits one per selected game), so any matching entry that grants the
+	// action is enough. We distinguish exact grants from the "*" wildcard ("all
+	// games"): exact grants were bound to a game the user owns at consent time,
+	// but the wildcard matches whatever id is in the URL, so it must be backed by
+	// an ownership check before we trust it — otherwise it would let a token edit
 	// games belonging to other users.
 	const details = result.authorization_details ?? [];
 	const actionable = details.filter(
@@ -116,7 +131,7 @@ async function authorizeGameAction(
 		};
 	}
 
-	if (!grantedExact && grantedWildcard && !(await userOwnsGame(result.sub, gameId))) {
+	if (!grantedExact && grantedWildcard && !(game && (await userOwnsGame(result.sub, game)))) {
 		return {
 			error: json(
 				{ message: `Access token does not grant "${action}" on this game.` },
@@ -128,21 +143,27 @@ async function authorizeGameAction(
 	return { userId: result.sub };
 }
 
+// Loads a game by id, or null if it doesn't exist. Used to read the creator
+// identity and owner before deciding access; missing games fail closed.
+async function loadGame(gameId: string): Promise<Games | null> {
+	try {
+		const databases = new Databases(serverClient());
+		return await databases.getDocument<Games>('main', 'games', gameId);
+	} catch {
+		return null;
+	}
+}
+
 // Confirms the user owns the target game, for the wildcard ("*") grant. The
 // wildcard means "all games the user owns", which the consent picker enforces
 // by only listing owned games; this re-checks it server-side since the token
 // itself carries no concrete game id. Returns false on any missing link
-// (no profile, missing game) so access fails closed.
-async function userOwnsGame(userId: string, gameId: string): Promise<boolean> {
+// (no profile) so access fails closed.
+async function userOwnsGame(userId: string, game: Games): Promise<boolean> {
 	try {
 		const users = new Users(serverClient());
 		const prefs = await users.getPrefs<{ profileId?: string }>(userId);
-		const profileId = prefs.profileId;
-		if (!profileId) return false;
-
-		const databases = new Databases(serverClient());
-		const game = await databases.getDocument<Games>('main', 'games', gameId);
-		return game.ownerProfileId === profileId;
+		return !!prefs.profileId && game.ownerProfileId === prefs.profileId;
 	} catch {
 		return false;
 	}

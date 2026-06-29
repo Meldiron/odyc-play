@@ -1,4 +1,4 @@
-import { introspect, tokenScopes } from '$lib/server/oauth';
+import { introspect, tokenScopes, tokenGrantId } from '$lib/server/oauth';
 import {
 	handleRpcMessage,
 	rpcErrors,
@@ -67,6 +67,7 @@ export async function POST({ request, url }) {
 
 	const ctx: McpContext = {
 		userId: result.sub,
+		grantId: tokenGrantId(result),
 		scopes: tokenScopes(result),
 		authorizationDetails: result.authorization_details ?? [],
 		origin: url.origin
