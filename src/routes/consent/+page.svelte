@@ -20,20 +20,26 @@
 		.map((detail, index) => ({ detail, index }))
 		.filter(({ detail }) => detail.type === 'game');
 
-	// Resolved identifiers per detail index. Each picker writes back either
-	// `['*']` (all games) or one entry per chosen game; pre-filled from the
-	// identifier the client originally requested.
+	// Resolved identifiers per detail index. Each picker writes back `['*']`
+	// (all games), one entry per chosen game, or `[]` (no games); pre-filled
+	// from the identifier the client originally requested.
 	let detailIdentifiers = $state<Record<number, string[]>>(
 		Object.fromEntries(
 			gameDetails.map(({ detail, index }) => [index, detail.identifier ? [detail.identifier] : []])
 		)
 	);
 
-	// Approval is blocked until every game detail resolves to at least one
-	// identifier, so we never record a `type: 'game'` entry without a target.
-	const allGamesSelected = $derived(
-		gameDetails.every(({ index }) => (detailIdentifiers[index]?.length ?? 0) > 0)
+	// Whether each picker currently holds a complete choice. "No games" resolves
+	// to an empty identifier list yet is still valid, so we can't infer validity
+	// from the identifiers alone — the picker reports it directly. Pre-filled
+	// requests start valid; an empty "specific games" picker starts invalid.
+	let detailValidity = $state<Record<number, boolean>>(
+		Object.fromEntries(gameDetails.map(({ detail, index }) => [index, !!detail.identifier]))
 	);
+
+	// Approval is blocked until every game detail is a complete choice, so we
+	// never record a `type: 'game'` entry that the user hasn't resolved.
+	const allGamesSelected = $derived(gameDetails.every(({ index }) => detailValidity[index]));
 
 	async function allow() {
 		submitting = true;
@@ -43,7 +49,12 @@
 			if (detail.type !== 'game') return [detail];
 			return (detailIdentifiers[index] ?? []).map((identifier) => ({ ...detail, identifier }));
 		});
-		const authorizationDetails = enriched.length > 0 ? JSON.stringify(enriched) : undefined;
+		// Pass the resolved details (even when empty, e.g. every game detail set to
+		// "no games") whenever the client requested any, so the user's opt-out is
+		// recorded rather than falling back to the originally-requested details.
+		// Only omit it entirely when no details were requested in the first place.
+		const authorizationDetails =
+			data.authorizationDetails.length > 0 ? JSON.stringify(enriched) : undefined;
 		const { redirectUrl } = await Backend.approve(data.grantId, authorizationDetails);
 		// The device flow (RFC 8628) has no browser redirect target — the device polls
 		// for the token on its own. Send the user to a finish screen instead of
@@ -135,6 +146,7 @@
 							actions={detail.actions ?? []}
 							{actionLabel}
 							bind:identifiers={detailIdentifiers[index]}
+							bind:valid={detailValidity[index]}
 						/>
 					{/each}
 

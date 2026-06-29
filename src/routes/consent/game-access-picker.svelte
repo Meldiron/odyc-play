@@ -9,6 +9,7 @@
 	import XIcon from '@lucide/svelte/icons/x';
 	import GamepadIcon from '@lucide/svelte/icons/gamepad';
 	import GlobeIcon from '@lucide/svelte/icons/globe';
+	import BanIcon from '@lucide/svelte/icons/ban';
 
 	type GameOption = { id: string; name: string };
 
@@ -16,21 +17,26 @@
 		games,
 		actions = [],
 		actionLabel,
-		// The resolved identifiers for this authorization detail: either `['*']`
-		// for the all-games wildcard, or one entry per selected game id.
-		identifiers = $bindable([])
+		// The resolved identifiers for this authorization detail: `['*']` for the
+		// all-games wildcard, one entry per selected game id, or `[]` for "no games".
+		identifiers = $bindable([]),
+		// Whether the current selection is a complete, submittable choice. Only the
+		// in-between "specific games, none picked yet" state is invalid; "no games"
+		// is an explicit, valid opt-out.
+		valid = $bindable(true)
 	}: {
 		games: Games[];
 		actions?: string[];
 		actionLabel: (action: string) => string;
 		identifiers: string[];
+		valid?: boolean;
 	} = $props();
 
 	// Seed the picker from whatever identifier the client pre-requested: `*`
 	// opens in all-games mode, a concrete id pre-selects that game, anything
 	// else starts on an empty "specific games" picker.
 	const seeded = identifiers.filter((id) => id && id !== '*');
-	let mode = $state<'all' | 'specific'>(identifiers.includes('*') ? 'all' : 'specific');
+	let mode = $state<'all' | 'specific' | 'none'>(identifiers.includes('*') ? 'all' : 'specific');
 	let selected = $state<GameOption[]>(
 		seeded.map((id) => ({ id, name: games.find((g) => g.$id === id)?.name ?? id }))
 	);
@@ -53,7 +59,14 @@
 
 	// Push the active selection back up to the parent as resolved identifiers.
 	$effect(() => {
-		identifiers = mode === 'all' ? ['*'] : selected.map((g) => g.id);
+		identifiers = mode === 'all' ? ['*'] : mode === 'none' ? [] : selected.map((g) => g.id);
+	});
+
+	// "All games" and "No games" are always complete choices. "Specific games"
+	// only counts once at least one game is picked. With no games to choose from,
+	// the picker can only resolve to "no games", so it's always valid.
+	$effect(() => {
+		valid = games.length === 0 || mode !== 'specific' || selected.length > 0;
 	});
 
 	function addGame(game: Games) {
@@ -77,7 +90,7 @@
 			variant="outline"
 			value={mode}
 			onValueChange={(value) => {
-				if (value === 'all' || value === 'specific') mode = value;
+				if (value === 'all' || value === 'specific' || value === 'none') mode = value;
 			}}
 			class="w-full"
 		>
@@ -89,6 +102,10 @@
 				<GamepadIcon class="size-4" />
 				{stores.t('consent.gameAccessSpecific')}
 			</ToggleGroup.Item>
+			<ToggleGroup.Item value="none" class="gap-2">
+				<BanIcon class="size-4" />
+				{stores.t('consent.gameAccessNone')}
+			</ToggleGroup.Item>
 		</ToggleGroup.Root>
 
 		{#if mode === 'all'}
@@ -97,6 +114,13 @@
 			>
 				<GlobeIcon class="text-primary mt-0.5 size-4 flex-shrink-0" />
 				<span class="text-muted-foreground">{stores.t('consent.gameAccessAllHint')}</span>
+			</div>
+		{:else if mode === 'none'}
+			<div
+				class="bg-muted/40 flex items-start gap-2 rounded-md border border-dashed p-3 text-sm"
+			>
+				<BanIcon class="text-muted-foreground mt-0.5 size-4 flex-shrink-0" />
+				<span class="text-muted-foreground">{stores.t('consent.gameAccessNoneHint')}</span>
 			</div>
 		{:else}
 			<Popover.Root bind:open={comboOpen}>
