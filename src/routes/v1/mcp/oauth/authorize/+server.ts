@@ -17,9 +17,16 @@ export function GET({ url }) {
 	const params = new URLSearchParams(url.searchParams);
 
 	// Only inject our RAR when the client didn't request its own — never override
-	// an explicit authorization_details a more capable client might send.
+	// an explicit authorization_details a more capable client might send. And only
+	// when a games-related scope was requested: a client asking purely for e.g.
+	// openid/profile has no business with game code, and injecting the detail
+	// would force the consent screen's game picker on an unrelated request.
 	if (!params.has('authorization_details')) {
-		params.set('authorization_details', CODE_WRITE_DETAILS);
+		const scopes = (params.get('scope') ?? '').split(/\s+/).filter(Boolean);
+		const wantsGames = scopes.some((scope) => scope === 'games' || scope.startsWith('games.'));
+		if (wantsGames) {
+			params.set('authorization_details', CODE_WRITE_DETAILS);
+		}
 	}
 
 	throw redirect(302, `/consent?${params.toString()}`);
