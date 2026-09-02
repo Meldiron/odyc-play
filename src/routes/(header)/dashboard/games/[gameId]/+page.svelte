@@ -54,7 +54,7 @@
 	let isRecording = $state(false);
 	let hasChangedCode = $state(false);
 
-	window.addEventListener('message', function (event) {
+	function onWindowMessage(event: MessageEvent) {
 		const { type, detail } = event.data;
 		if (type === 'on-runner-ready') {
 			updateCode(true);
@@ -62,7 +62,7 @@
 			const { blob } = detail;
 			onSaveCodeFinish(blob);
 		}
-	});
+	}
 
 	async function getGameBlob() {
 		// @ts-expect-error It exists, not sure why types dont see it
@@ -126,36 +126,44 @@
 			};
 		}
 
-		document.addEventListener('keydown', (event) => {
-			const isCtrl = event.metaKey || event.ctrlKey;
-			const isShift = event.shiftKey;
-			if (isShift) {
-				if (isCtrl && event.code === 'KeyF') {
-					event.preventDefault();
-					event.stopPropagation();
-					onFormat();
-					return;
-				} else if (isCtrl && event.code === 'KeyS') {
-					event.preventDefault();
-					event.stopPropagation();
-					setShowSaveAsDialog(true);
-					return;
-				} else if (isCtrl && event.code === 'KeyD') {
-					event.preventDefault();
-					event.stopPropagation();
-					onDownload();
-					return;
-				}
-			}
+		window.addEventListener('message', onWindowMessage);
+		document.addEventListener('keydown', onGlobalKeydown);
 
-			if (isCtrl && event.code === 'KeyS') {
+		return () => {
+			window.removeEventListener('message', onWindowMessage);
+			document.removeEventListener('keydown', onGlobalKeydown);
+		};
+	});
+
+	function onGlobalKeydown(event: KeyboardEvent) {
+		const isCtrl = event.metaKey || event.ctrlKey;
+		const isShift = event.shiftKey;
+		if (isShift) {
+			if (isCtrl && event.code === 'KeyF') {
 				event.preventDefault();
 				event.stopPropagation();
-				onSaveCodeStart();
+				onFormat();
+				return;
+			} else if (isCtrl && event.code === 'KeyS') {
+				event.preventDefault();
+				event.stopPropagation();
+				setShowSaveAsDialog(true);
+				return;
+			} else if (isCtrl && event.code === 'KeyD') {
+				event.preventDefault();
+				event.stopPropagation();
+				onDownload();
 				return;
 			}
-		});
-	});
+		}
+
+		if (isCtrl && event.code === 'KeyS') {
+			event.preventDefault();
+			event.stopPropagation();
+			onSaveCodeStart();
+			return;
+		}
+	}
 
 	function updateCode(force = false) {
 		hasChangedCode = code !== initialCode;

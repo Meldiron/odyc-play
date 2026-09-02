@@ -6,6 +6,7 @@
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { stores } from '$lib/stores.svelte';
 	import ExternalLinkIcon from '@lucide/svelte/icons/external-link';
+	import ImageIcon from '@lucide/svelte/icons/image';
 	import PlusIcon from '@lucide/svelte/icons/plus';
 	import StoreIcon from '@lucide/svelte/icons/store';
 	import type { PageProps } from './$types';
@@ -59,16 +60,20 @@
 						href="/dashboard/apps/{app.$id}"
 						class="focus-visible:ring-ring/50 block focus-visible:ring-2 focus-visible:outline-none"
 					>
-						{#if app.images?.length}
-							<div class="bg-muted aspect-video w-full overflow-hidden">
+						<div class="bg-muted aspect-video w-full overflow-hidden">
+							{#if app.images?.length}
 								<img
 									src={app.images[0]}
 									alt=""
 									loading="lazy"
 									class="size-full object-cover transition-transform duration-300 group-hover:scale-105"
 								/>
-							</div>
-						{/if}
+							{:else}
+								<div class="text-muted-foreground/40 flex size-full items-center justify-center">
+									<ImageIcon class="size-8" />
+								</div>
+							{/if}
+						</div>
 						<Card.Header class="pt-6">
 							<div class="flex gap-3 {app.tagline ? 'items-center' : 'items-start'}">
 								<Avatar.Root class="size-11 flex-shrink-0 rounded-xl border">

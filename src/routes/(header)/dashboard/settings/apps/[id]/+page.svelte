@@ -648,6 +648,11 @@
 						</div>
 					</div>
 				</Card.Content>
+				<Card.Footer class="justify-end">
+					<Button type="submit" disabled={isSaving || !hasChanges || !name.trim()}>
+						{stores.t('apps.save')}
+					</Button>
+				</Card.Footer>
 				</Card.Root>
 			</form>
 
