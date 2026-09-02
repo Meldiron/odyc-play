@@ -96,20 +96,22 @@
 						</p>
 
 						<!-- Terminal command block -->
-						<div class="bg-foreground text-background mt-2.5 flex flex-col rounded-md font-mono text-xs">
+						<div
+							class="mt-2.5 flex flex-col rounded-md border border-zinc-800 bg-zinc-950 font-mono text-xs text-zinc-100"
+						>
 							{#each step.commands as command, j (command)}
 								{@const key = `${i}-${j}`}
 								<div
-									class="border-background/10 flex items-center gap-2 py-2 pr-2 pl-3 not-first:border-t"
+									class="flex items-center gap-2 border-zinc-800 py-2 pr-2 pl-3 not-first:border-t"
 								>
-									<span class="text-background/40 select-none">$</span>
+									<span class="text-zinc-500 select-none">$</span>
 									<code class="min-w-0 flex-1 overflow-x-auto whitespace-nowrap">{command}</code>
 									<button
 										type="button"
 										onclick={() => copy(command, key)}
 										title={copiedKey === key ? stores.t('cli.copied') : stores.t('cli.copy')}
 										aria-label={stores.t('cli.copy')}
-										class="text-background/60 hover:bg-background/10 hover:text-background flex size-7 flex-shrink-0 items-center justify-center rounded transition-colors"
+										class="flex size-7 flex-shrink-0 items-center justify-center rounded text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
 									>
 										{#if copiedKey === key}
 											<IconCheck class="size-4" />
