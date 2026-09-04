@@ -1,8 +1,7 @@
-import { Client, Databases, Users } from 'node-appwrite';
-import { env } from '$env/dynamic/private';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
+import { Databases, Users } from 'node-appwrite';
 import { json } from '@sveltejs/kit';
 import type { Profiles } from '$lib/appwrite';
+import { introspect, serverClient } from '$lib/server/oauth';
 
 // Public, OAuth2-protected API for reading and updating the authorizing user's
 // avatar. Access tokens are validated against the OAuth2 introspection endpoint
@@ -16,39 +15,6 @@ const CORS = {
 };
 
 const AVATAR_MAX_LENGTH = 4096;
-
-type Introspection = {
-	active: boolean;
-	scope?: string;
-	sub?: string;
-	client_id?: string;
-};
-
-function serverClient() {
-	return new Client()
-		.setEndpoint(APPWRITE_ENDPOINT)
-		.setProject(APPWRITE_PROJECT_ID)
-		.setKey(env.SSR_APPWRITE_API_KEY ?? '');
-}
-
-// RFC 7662 token introspection, authenticated with the server API key.
-async function introspect(token: string): Promise<Introspection | null> {
-	const res = await fetch(`${OAUTH2_BASE}/introspect`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? '',
-			'x-appwrite-project': APPWRITE_PROJECT_ID ?? ''
-		},
-		body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString()
-	});
-
-	if (!res.ok) {
-		return null;
-	}
-
-	return (await res.json()) as Introspection;
-}
 
 // Validates the Bearer token and required scope. Returns the user id on success,
 // or a ready-to-return error Response.

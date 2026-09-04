@@ -1,11 +1,10 @@
-import { Client, Users } from 'node-appwrite';
+import { AppwriteException, Client, Users } from 'node-appwrite';
 import { env } from '$env/dynamic/private';
 import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
 
-// Shared server-only OAuth2 helpers, reused by the MCP server and its OAuth
-// discovery/registration/token routes. Mirrors the inline helpers in the other
-// /v1 endpoints (introspection + server API key), centralised here because the
-// MCP surface spans several files.
+// Shared server-only OAuth2 helpers, reused by the MCP server, its OAuth
+// discovery/registration/token routes and the public /v1 endpoints, which all
+// need the same "introspect the bearer token with the server API key" step.
 
 export type AuthorizationDetail = {
 	type: string;
@@ -36,23 +35,27 @@ export function serverClient() {
 		.setKey(env.SSR_APPWRITE_API_KEY ?? '');
 }
 
-// RFC 7662 token introspection, authenticated with the server API key.
+// RFC 7662 token introspection, authenticated with the server API key. Issued
+// through the SDK client rather than a hand-rolled fetch, so the endpoint,
+// project and API key headers come from the same client configuration as every
+// other server call. The SDK throws on non-2xx responses; an inactive token is
+// a 200 with `active: false`, so only transport/auth failures map to null.
 export async function introspect(token: string): Promise<Introspection | null> {
-	const res = await fetch(`${OAUTH2_BASE}/introspect`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? '',
-			'x-appwrite-project': APPWRITE_PROJECT_ID ?? ''
-		},
-		body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString()
-	});
+	const client = serverClient();
 
-	if (!res.ok) {
-		return null;
+	try {
+		return (await client.call(
+			'post',
+			new URL(`${OAUTH2_BASE}/introspect`),
+			{ 'content-type': 'application/json' },
+			{ token, token_type_hint: 'access_token' }
+		)) as Introspection;
+	} catch (error) {
+		if (error instanceof AppwriteException) {
+			return null;
+		}
+		throw error;
 	}
-
-	return (await res.json()) as Introspection;
 }
 
 // Resolves the user's active profile document id (stored in their prefs).

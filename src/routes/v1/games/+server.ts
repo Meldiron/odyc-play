@@ -1,12 +1,10 @@
-import { Client, Databases, Users, ID, Permission, Role, AppwriteException } from 'node-appwrite';
-import { env } from '$env/dynamic/private';
+import { Databases, Users, ID, Permission, Role, AppwriteException } from 'node-appwrite';
 import { PUBLIC_ODYC_VERSION } from '$env/static/public';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
 import { json } from '@sveltejs/kit';
 import slugify from 'slugify';
 import friendlyWords from 'friendly-words';
 import type { Games } from '$lib/appwrite';
-import { tokenGrantId } from '$lib/server/oauth';
+import { introspect, serverClient, tokenGrantId } from '$lib/server/oauth';
 
 // Public, OAuth2-protected API for creating games on behalf of the authorizing
 // user. Access tokens are validated against the OAuth2 introspection endpoint
@@ -21,41 +19,6 @@ const CORS = {
 
 const NAME_MAX_LENGTH = 256;
 const CODE_MAX_LENGTH = 1_000_000;
-
-type Introspection = {
-	active: boolean;
-	scope?: string;
-	sub?: string;
-	client_id?: string;
-	grant_id?: string;
-	jti?: string;
-};
-
-function serverClient() {
-	return new Client()
-		.setEndpoint(APPWRITE_ENDPOINT)
-		.setProject(APPWRITE_PROJECT_ID)
-		.setKey(env.SSR_APPWRITE_API_KEY ?? '');
-}
-
-// RFC 7662 token introspection, authenticated with the server API key.
-async function introspect(token: string): Promise<Introspection | null> {
-	const res = await fetch(`${OAUTH2_BASE}/introspect`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? '',
-			'x-appwrite-project': APPWRITE_PROJECT_ID ?? ''
-		},
-		body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString()
-	});
-
-	if (!res.ok) {
-		return null;
-	}
-
-	return (await res.json()) as Introspection;
-}
 
 // Validates the Bearer token and required scope. Returns the user id on success,
 // or a ready-to-return error Response.

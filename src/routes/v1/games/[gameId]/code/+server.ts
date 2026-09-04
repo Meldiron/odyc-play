@@ -1,9 +1,7 @@
-import { Client, Databases, Users } from 'node-appwrite';
-import { env } from '$env/dynamic/private';
-import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID, OAUTH2_BASE } from '$lib/constants';
+import { Databases, Users } from 'node-appwrite';
 import { json } from '@sveltejs/kit';
 import type { Games } from '$lib/appwrite';
-import { tokenGrantId, isSameGrant } from '$lib/server/oauth';
+import { introspect, serverClient, tokenGrantId, isSameGrant } from '$lib/server/oauth';
 
 // Public, OAuth2-protected API for updating a game's code. Unlike the other
 // endpoints, authorization here is fine-grained per game via RFC 9396 Rich
@@ -18,49 +16,6 @@ const CORS = {
 };
 
 const CODE_MAX_LENGTH = 1_000_000;
-
-type AuthorizationDetail = {
-	type: string;
-	identifier?: string;
-	actions?: string[];
-	locations?: string[];
-};
-
-type Introspection = {
-	active: boolean;
-	scope?: string;
-	sub?: string;
-	client_id?: string;
-	grant_id?: string;
-	jti?: string;
-	authorization_details?: AuthorizationDetail[];
-};
-
-function serverClient() {
-	return new Client()
-		.setEndpoint(APPWRITE_ENDPOINT)
-		.setProject(APPWRITE_PROJECT_ID)
-		.setKey(env.SSR_APPWRITE_API_KEY ?? '');
-}
-
-// RFC 7662 token introspection, authenticated with the server API key.
-async function introspect(token: string): Promise<Introspection | null> {
-	const res = await fetch(`${OAUTH2_BASE}/introspect`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/x-www-form-urlencoded',
-			'x-appwrite-key': env.SSR_APPWRITE_API_KEY ?? '',
-			'x-appwrite-project': APPWRITE_PROJECT_ID ?? ''
-		},
-		body: new URLSearchParams({ token, token_type_hint: 'access_token' }).toString()
-	});
-
-	if (!res.ok) {
-		return null;
-	}
-
-	return (await res.json()) as Introspection;
-}
 
 // Validates the Bearer token and, via RFC 9396 Rich Authorization Requests,
 // that the token grants `action` on the given game. Returns the user id on
