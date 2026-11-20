@@ -51,6 +51,8 @@ export const translations = {
 		'auth.welcomeDescription':
 			'Create and share your pixel-perfect games with your friends, colleagues, and community.',
 		'auth.email': 'Email',
+		'auth.password': 'Password',
+		'auth.passwordOptional': 'Optional. Leave empty to sign in with a one-time code.',
 		'auth.signIn': 'Sign in',
 		'auth.continue': 'Continue',
 		'auth.or': 'Or',
@@ -485,6 +487,8 @@ export const translations = {
 		'auth.welcome': 'Bienvenue sur Odyc.js Play',
 		'auth.welcomeDescription': 'Créez et partagez vos jeux pixel-perfect avec la communauté',
 		'auth.email': 'Email',
+		'auth.password': 'Mot de passe',
+		'auth.passwordOptional': 'Facultatif. Laissez vide pour vous connecter avec un code unique.',
 		'auth.signIn': 'Se connecter',
 		'auth.continue': 'Continuer',
 		'auth.or': 'Ou',

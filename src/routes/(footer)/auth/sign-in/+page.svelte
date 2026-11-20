@@ -25,6 +25,7 @@
 	let isLoading = $state(false);
 
 	let email = $state('');
+	let password = $state('');
 	let otp = $state('');
 	let error = $state<any>(null);
 
@@ -38,7 +39,20 @@
 		isLoading = true;
 		error = null;
 
-		if (!token) {
+		if (!token && password) {
+			// Password provided: sign in directly, skipping the email OTP step.
+			// Capture the target before navigating (see below).
+			const target = redirectTarget;
+			try {
+				await Backend.signInEmailPassword(email, password);
+				toast.success(stores.t('auth.signInSuccess'));
+				await goto(target, { invalidateAll: true });
+			} catch (err: any) {
+				error = err;
+			} finally {
+				isLoading = false;
+			}
+		} else if (!token) {
 			try {
 				token = await Backend.signInMagicURL(email);
 				step = 2;
@@ -73,6 +87,7 @@
 	function onStepBack() {
 		step = 1;
 		email = '';
+		password = '';
 		otp = '';
 		token = null;
 		error = null;
@@ -132,6 +147,19 @@
 									placeholder="your@email.com"
 									required
 								/>
+							</div>
+							<div class="grid gap-3">
+								<Label for="login-password">{stores.t('auth.password')}</Label>
+								<Input
+									bind:value={password}
+									id="login-password"
+									type="password"
+									autocomplete="current-password"
+									placeholder="••••••••"
+								/>
+								<p class="text-muted-foreground text-xs">
+									{stores.t('auth.passwordOptional')}
+								</p>
 							</div>
 							<Button disabled={isLoading} type="submit" class="w-full"
 								>{stores.t('auth.signIn')}</Button

@@ -51,6 +51,10 @@ export class Backend {
 		return await this.#account.createEmailToken(ID.unique(), email, true);
 	}
 
+	static async signInEmailPassword(email: string, password: string): Promise<Models.Session> {
+		return await this.#account.createEmailPasswordSession(email, password);
+	}
+
 	static signInGitHub(returnPath?: string) {
 		const fallback =
 			window.location.origin +
